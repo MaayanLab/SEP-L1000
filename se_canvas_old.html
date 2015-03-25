@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">	
+	<title>Prediction of drug side effects</title>
+<!-- 	<link rel="stylesheet" type="text/css" href='css/visualizer5.css' />
+-->    <link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/jquery-ui.css" />
+
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src='js/d3.v2.min.js'></script>
+<script src='js/html5slider.js'></script>
+<script src='js/canvasVisualizer.js'></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/functions.js"></script>
+</head>
+<body>
+	<div id="nav"></div>
+	<script type="text/javascript">
+	$("#nav").load("nav.html", function(){
+		$("#browse").addClass("active");
+	});
+	</script>
+
+	<div id="externalwrapper" class="container">
+		<div id="holdElements" class="row">
+			<div id="header" class="row text-center">
+				<h2>Side effects on a canvas based on drug similarity</h2>
+				<br>
+				<h4>Click a tile to display more information of the side-effect</h4>
+			</div>
+			<div id="outputDisplay1" class="col-md-3">
+				<div id="nodeInformation" class="panel panel-info">
+					<div class="displayTitle panel-heading">Side effect:</div>
+					<div id="nodeName" class="panel-body"></div>
+				</div>
+				<div class="panel panel-success">
+					<div id="additTitle" class="panel-heading">Predicted associated drugs:</div>
+					<div id="infoContainer" class="panel-body">
+						<div id="additionalInfo"></div>
+					</div>
+				</div>
+			</div>
+			<div id="holdSVG" class="col-md-6">
+				<div id="svgWrapper" class="row text-center">
+					<div id="svgContainer"></div>
+				</div>
+				<br />
+				<form>
+					<div class="panel panel-danger">
+						<div class="panel-heading">Canvas options</div>
+						<div class="panel-body">
+					<div class="col-md-6">
+						<div class="btn-group">
+							<button type="button" class="btn btn-info" onclick="centerCanvas(G_VAR.nodes, G_VAR.canvasSize)">Center Canvas</button>
+							<input type="button" class="btn btn-info" name="button" value="Reset Scale" onclick="resetColorScale(G_VAR.nodes, G_VAR.canvasRGB, G_VAR.canvasSize);"/>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<h4>Choose Canvas Color:</h4> 
+						<div id="wheelContain"></div>
+						<span>Color Scale: </span><em id="colorScale">1	</em>
+						<input type="range" min="0" max="1" value="1" step=".001" name="scale" id="range_colorScale" onMouseup="scaleColor(G_VAR.nodes, G_VAR.avgWeight, this.form.scale.value, G_VAR.canvasRGB, G_VAR.canvasSize);" onChange="seeScale(this.form.scale.value);"></input>
+					</div>					
+
+
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="sidePanel" class="col-md-3">
+				<div class="panel panel-warning">
+					<div class="panel-heading">Find side effects or drugs</div>
+					<div class="panel-body">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="active"><a href="#formFind1" role="tab" data-toggle="tab">by side effects</a></li>
+							<li><a href="#formFind2" role="tab" data-toggle="tab">by drugs</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane fade in active" id="formFind1">
+								<br>
+								<form id="formFind1">
+									<textarea id="nodes" names="nodes" cols="25" rows="10" onfocus="clearTextArea(this.form.nodes)">Insert side effect ID list</textarea>
+									<br>
+									<input type="button" class="btn btn-info" onclick="fill(G_VAR.nodes, this.form.nodes.value, G_VAR.indicatorColor , G_VAR.width);" value="Find"/>
+								</form>
+							</div>
+							<div class="tab-pane fade" id="formFind2">
+								<br>
+								<form id="formFind2">
+									<textarea id="nodes" names="nodes" cols="25" rows="10" onfocus="clearTextArea(this.form.nodes)">Insert drug ID list</textarea>
+									<br>
+									<input type="button" class="btn btn-info" onclick="fillElement(G_VAR.nodes, this.form.nodes.value, G_VAR.indicatorColor , G_VAR.width);" value="Find"/>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+
+colorWheel(15, "div#wheelContain", "G_VAR.canvasRGB", [0, 255, 255]);
+$.getJSON('json/predicted_se_bonf_pert_id_dict.json',function(data){
+	var infos = data;
+	$.getJSON('json/predicted_se_bonf_ses_s2n_mat.json',function(json){
+		var json = json;
+		getJSON(json, [0, 255, 255], [255, 255, 255]);
+		if (typeof infos != "undefined") {
+			G_VAR.infos = infos;
+		}
+		storeFact = [0,0];
+	});
+});
+
+</script>
+</html>

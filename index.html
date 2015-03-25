@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prediction of drug side effects</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="nav"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <h4>Gene expression profiling of <a target='_blank' href="browse_drug.html">20,413 small-molecule compounds</a> using the <a target='_blank' href="http://lincscloud.org">L1000 technology</a> were processed in combination with <a target='_blank' href="http://sideeffects.embl.de/">SIDER</a> side effects resource to build a classifier that is used to predict likely <a target='_blank' href="browse_se.html">side effects</a> for pre-clinical drugs. </h4>
+          <h4>284 side effects from SIDER were predicted.</h4>
+        </div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="panel panel-success">
+            <div class="panel-heading">Side Effect Network Visualization on a Canvas</div>
+            <div class="panel-body">
+              <div class="col-md-6" id="canvas">
+                <div id="loader">
+                  <p id="loader-text">Loading side-effect canvas</p>
+                  <br>
+                </div>
+              </div>
+              <div class="col-md-6" id="nodeInfo"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/functions.js"></script>
+<script src="js/d3.min.js"></script>
+<script src="js/d3pie.min.js"></script>
+<script type="text/javascript">
+  $("#nav").load("nav.html", function(){
+    $("#home").addClass("active");
+  });
+</script>
+<script src="js/canvasVis.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  // $.getJSON('stats.php', {type: 'pert_collections'}, function(json){
+  //   drawPieChart(json, 'Drugs in LINCS cloud', '#chart1');
+  // });
+
+  var progress = 0,
+    total = 12367192,
+    formatPercent = d3.format("%");
+  var progressBar = d3.select('#loader').append('div')
+            .attr('class','progress')
+            .append('div')
+              .attr('class', 'progress-bar progress-bar-striped active')
+              .attr('role', 'progressbar')
+              .attr('aria-valuemax',100)
+              .attr('aria-valuemin',0)
+  var progressGrow = function() {
+    progress = d3.event.loaded / total;
+    progressBar.style('width',formatPercent(progress)).text(formatPercent(progress));
+  }
+
+  d3.json('json/combined_predictable-PTs_MCC_0.1_n20339x284_0.95_flip_significance_scores_matrix.json', function(canvasJson){
+    var canvasObj = new Canvas(canvasJson);
+    canvasObj.canvasSize = 400;
+    canvasObj.visualize('#loader')
+    d3.select("#loader-text").text("Loading data into the canvas")
+
+    d3.json('json/canvas_data_BRETs_no_known.json', function(json){
+      var infos = json['gmt'],
+        seJson = json['side_effects'],
+        drugJson = json['drugs'],
+        nodeDrugJson = json['vals'];
+      canvasObj.setInfos(infos);
+      canvasObj.setInfoDict(infos);
+      canvasObj.nodeInfoSelector = '#nodeInfo';
+      var map = json2map(seJson, 'umls_id', 'name');
+      canvasObj.loadNodeNames(map);
+      canvasObj.loadGenes(drugJson, 'pert_id', 'pert_iname');
+      canvasObj.loadGenesForNodes(nodeDrugJson);
+
+      d3.select('#loader').remove()
+      d3.select('#canvas').append('p')
+        .text('Click a tile to display the side effect information')
+      canvasObj.visualize('#canvas');
+      canvasObj.preloadNodeInfo();
+
+    }).on("progress", progressGrow);
+  })
+});
+</script>
+
+  </body>
+</html>

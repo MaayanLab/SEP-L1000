@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prediction of drug side effects</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body data-spy="scroll" data-target=".col-md-2" style="position:relative;" data-offset="0">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/functions.js"></script>
+    <div id="nav"></div>
+    <script type="text/javascript">
+      $("#nav").load("nav.html",function(){
+        $("#method").addClass("active");
+      });
+    </script>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="prediction" class="row">
+            <h1>Predictions</h1>
+            <p>Some texts to be added...</p>
+          </div>
+          <div id="performance" class="row">
+            <h1>Performance</h1>
+            <div class="col-md-6">
+              <img height="300" src="img/performance/AUCs_individual_distil_id_PDF.png">
+              <p><b>Fig.1</b> Probability distribution of AUCs derived from individual perturbations. </p>
+            </div>
+            <div class="col-md-6">
+              <img height="300" src="img/performance/micro-averaged_ROC.png">
+              <p><b>Fig.2</b> Micro-averaged ROC curves. </p>
+            </div>
+            <div class="col-md-12">
+              <img height="300" src="img/performance/macro-averaged_ROC_distil_ids.png">
+              <p><b>Fig.3</b> Macro-averaged ROC curves. </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

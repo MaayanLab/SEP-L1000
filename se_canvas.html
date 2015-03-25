@@ -1,0 +1,163 @@
+<html lang='en'>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Prediction of drug side effects</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/jquery-ui.css" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->    
+  </head>
+  <body>
+  	<div id="nav"></div>
+  	<div class="container">
+  		<div class="row">        
+  			<div class="col-md-3">          
+  				<div class="well">            
+  					<ul class="nav nav-tabs" role="tablist">
+  						<li class="active"><a href="#find" role="tab" data-toggle="tab">Find</a></li>
+  						<li><a href="#canvasOptions" role="tab" data-toggle="tab">Canvas options</a></li>
+  					</ul>
+  					<div id="leftPanel" class="tab-content">
+<!--   						<div class="tab-pane fade in active" id="find"></div>
+  						<div class="tab-pane fade" id="canvasOptions"></div>
+ -->  					</div>
+  				</div>		
+  			</div>
+
+  			<div class="col-md-5">
+  				<div class="panel panel-success">
+  					<div class="panel-heading">Side Effect Network Visualization on a Canvas</div>
+  					<div class="panel-body" id="canvas">
+
+              <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                  Filter data in the canvas
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                  <li id="canvas1" class="active" role="presentation"><a role="menuitem" tabindex="-1" href="#">Predicted side effects only</a></li>
+                  <li id="canvas2" role="presentation"><a role="menuitem" tabindex="-1" href="#">Known and predicted side effects</a></li>
+                </ul>
+              </div>
+
+  						<div id="loader">
+  							<p id="loader-text">Loading side-effect canvas</p>
+  							<br>
+  						</div>
+  					</div>
+  				</div>
+  			</div>
+  			<div class="col-md-4">
+  				<div class="panel panel-info">
+  					<div class="panel-heading">Information of the selected tile</div>
+  					<div class="panel-body">
+  						<span>Please click a tile on the canvas to display its information</div></span>
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+      <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  		<script src="js/jquery-ui.min.js"></script>
+  		<script src="js/bootstrap.min.js"></script>
+      <script src="js/functions.js"></script>
+  		<div id="nav"></div>
+  		<script type="text/javascript">
+  		$("#nav").load("nav.html", function(){
+  			$("#browse").addClass("active");
+  		});
+  		</script>
+  		<script src="js/d3.min.js"></script>
+  		<script src="js/canvasVis.js"></script>
+  		<script>      
+  		$(document).ready(function(){
+  			
+        var progress = 0,
+  			total = 12367192,
+  			formatPercent = d3.format("%");
+  			var progressBar = d3.select('#loader').append('div')
+  			.attr('class','progress')
+  			.append('div')
+  			.attr('class', 'progress-bar progress-bar-striped active')
+  			.attr('role', 'progressbar')
+  			.attr('aria-valuemax',100)
+  			.attr('aria-valuemin',0)
+  			var progressGrow = function() {
+  				progress = d3.event.loaded / total;
+  				progressBar.style('width',formatPercent(progress)).text(formatPercent(progress));
+  			}
+
+
+function loadCanvasData (canvasDataFile){
+  d3.json('json/combined_predictable-PTs_MCC_0.1_n20339x284_0.95_flip_significance_scores_matrix.json', function(canvasJson){
+    var canvasObj = new Canvas(canvasJson);
+
+    canvasObj.visualize('#loader')
+    d3.select("#loader-text").text("Loading data into the canvas")
+
+      
+
+    d3.json(canvasDataFile, function(json){
+      d3.select('#leftPanel').append('div').attr('class', 'tab-pane fade in active').attr('id', 'find')
+      d3.select('#leftPanel').append('div').attr('class', 'tab-pane fade').attr('id', 'canvasOptions')
+      var infos = json['gmt'],
+      seJson = json['side_effects'],
+      drugJson = json['drugs'],
+      nodeDrugJson = json['vals'];
+      canvasObj.setInfos(infos);
+      canvasObj.setInfoDict(infos);
+      canvasObj.nodeInfoSelector = '.panel-info .panel-body';
+      var map = json2map(seJson, 'umls_id', 'name');
+      canvasObj.loadNodeNames(map);
+      canvasObj.loadGenes(drugJson, 'pert_id', 'pert_iname');
+      canvasObj.loadGenesForNodes(nodeDrugJson);
+
+      d3.select('#loader').remove()
+      d3.select('#canvas').append('p').attr('id', 'hint')
+      .text('Click a tile to display the side effect information')
+      canvasObj.visualize('#canvas');
+      canvasObj.canvasOptions('#canvasOptions');
+      canvasObj.findElement('#find');
+      canvasObj.displayNodeInfo();
+      canvasObj.preloadNodeInfo();
+    }).on("progress", progressGrow)
+  })
+}
+    var canvasDataFile = 'json/canvas_data_BRETs_no_known.json'
+    loadCanvasData(canvasDataFile)
+    $("#canvas1").on("click", function(){
+        var data = 'json/canvas_data_BRETs_no_known.json'
+        if (data !== canvasDataFile) {
+          canvasDataFile = data;
+          $(this).addClass('active')
+          $("#canvas2").removeClass('active')
+          $("#find").remove();
+          $("#canvasOptions").remove();
+          $('#mainSVG').remove();
+          $('#hint').remove();
+          loadCanvasData(canvasDataFile)
+        }
+    });
+
+    $("#canvas2").on("click", function(){
+        var data = 'json/canvas_data_BRETs.json'
+        if (data !== canvasDataFile) {
+          canvasDataFile = data;
+          $(this).addClass('active')
+          $("#canvas1").removeClass('active')
+          $("#find").remove();
+          $("#canvasOptions").remove();
+          $('#mainSVG').remove();
+          $('#hint').remove();
+          loadCanvasData(data)
+        }
+    });
+
+})
+
+</script>
+</body>
+</html>
