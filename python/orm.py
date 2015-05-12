@@ -68,6 +68,7 @@ class SideEffect(Base):
 	umls_id = Column(String(16), unique=True)
 	name = Column(String(256))
 	synonyms = Column(Text)
+	auroc = Column(Float)
 
 	def __repr__(self):
 		return "<SideEffect(name='%s')>" % self.name
@@ -109,13 +110,15 @@ def get_or_create(session, model, **kwargs):
 		session.commit()
 		return instance	
 
-def add_predictions(se_names, pert_id, coefs, session):
+def add_predictions(se_names, aucs, pert_id, coefs, session):
 	# add predictions into the database
 	drug = get_or_create(session, DrugLINCS, pert_id=pert_id)
 
-	for coef, se_name in zip(coefs, se_names):
+	for coef, se_name, auc in zip(coefs, se_names, aucs):
 		a = Prediction(p_val=coef)
 		a.side_effect = get_or_create(session, SideEffect, name=se_name)
+		if a.side_effect.auroc is None:
+			a.side_effect.auroc = auc
 		drug.side_effects.append(a)
 	try:
 		session.add(drug)

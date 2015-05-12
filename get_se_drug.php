@@ -15,37 +15,38 @@ if ($conn->connect_error) {
   trigger_error('Database connection failed: ' . $conn->connect_error, E_USER_ERROR);
 }
 
-$query = "SELECT pert_id,p_val FROM p_vals WHERE umls_id='$umls_id' AND p_val>$probability";
-$drugs = query_mysql($query, $conn);
+$query = "SELECT drug_id,p_val FROM prediction INNER JOIN side_effects ON prediction.se_id = side_effects.id WHERE umls_id='$umls_id' AND p_val>$probability";
+$drugs = query_mysql($query, $conn); // drug_id and pvals
 
 // get drug associated with this SE in SIDER
-$query = "SELECT pert_id FROM sider_connections WHERE umls_id='$umls_id'";
+$query = "SELECT drug_id FROM sider_connections INNER JOIN side_effects ON sider_connections.se_id = side_effects.id WHERE umls_id='$umls_id'";
 $known_drugs = query_mysql($query, $conn);
-
 
 $known_drug_ids = array();
 foreach ($known_drugs as $key => $line) {
-	$id = $line['pert_id'];
+	$id = $line['drug_id'];
 	array_push($known_drug_ids, $id);
 }
 
+$arr_out = array();
 for ($i=0; $i < count($drugs); $i++) { 
-	$pert_id = $drugs[$i]['pert_id'];
-	$query = "SELECT pert_iname FROM drugs_lincs WHERE pert_id='$pert_id'";//to get names of pert_ids
-	$name = query_mysql($query, $conn);
-	$drugs[$i]['name'] = $name[0]['pert_iname'];
+	$drug_id = $drugs[$i]['drug_id'];
+	$query = "SELECT pert_id,pert_iname FROM drugs_lincs WHERE id='$drug_id'";//to get names of pert_ids
+	$drug_meta = query_mysql($query, $conn);
+	$arr_out[$i]['name'] = $drug_meta[0]['pert_iname'];
+	$arr_out[$i]['pert_id'] = $drug_meta[0]['pert_id'];
 	$p_val = $drugs[$i]['p_val'];
-	$drugs[$i]['p_val'] = sprintf('%0.2f', $p_val);
-	if (in_array($pert_id, $known_drug_ids)) {
-		$drugs[$i]['sider'] = 'yes';
+	$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
+	if (in_array($drug_id, $known_drug_ids)) {
+		$arr_out[$i]['sider'] = 'yes';
 	} else {
-		$drugs[$i]['sider'] = 'no';
+		$arr_out[$i]['sider'] = 'no';
 	}
 }
 
 $conn->close();
 
-$json = json_encode($drugs);
+$json = json_encode($arr_out);
 header('Content-Type: application/json');
 header('Content-Length: '.strlen($json));
 echo $json;

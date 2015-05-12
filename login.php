@@ -8,7 +8,7 @@ if ($cwd === "C:\\xampp\htdocs\SEP-L1000") { // localhost
 } elseif ($cwd === "/Library/WebServer/Documents/sep-l1000") { // zichen-mbp
 	$db_database = 'sep';
 	$db_username = 'root';
-	$db_password = '';	
+	$db_password = '';
 } else { // server
 	$db_database = 'maaya0_SEP';
 	$db_username = 'maaya0_Zichen';

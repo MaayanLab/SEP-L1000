@@ -7,7 +7,7 @@ if ($conn->connect_error) {
   trigger_error('Database connection failed: ' . $conn->connect_error, E_USER_ERROR);
 }
 
-$query = "SELECT * FROM side_effects";
+$query = "SELECT umls_id,name,synonyms FROM side_effects WHERE umls_id IS NOT NULL";
 $rs_arr = query_mysql($query, $conn);
 
 $conn->close();

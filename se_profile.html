@@ -79,7 +79,7 @@
               data: {umls_id: umls_id},
               dataType: 'json',
               success: function(json){
-                var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>pert_id</th><th>probability</th><th>Name</th><th>in SIDER?</th></tr></thead></table>');
+                var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>in SIDER?</th></tr></thead></table>');
                 $(".panel-primary .panel-body").html(table);
                 var tbody = objs2TableRowsWithStatus(json, 'pert_id', 'drug_profile.html?pert_id=', '.progress-bar');
                 table.append(tbody);
@@ -87,8 +87,8 @@
               complete: function(){
                 $("#table_drug").dataTable({
                   dom: 'Rlfrtip',
-                  colReorder:{order: [0,2,1,3]},
-                  "order": [[1, 'desc']],
+                  colReorder:{order: [1,0,2,3]},
+                  "order": [[2, 'desc']],
                   "deferRender": true,
                 });
                 // var filter = '<div class="input-group"><span class="input-group-btn"><button id="filter_btn" class="btn btn-primary" type="button">Filter by probability ></button></span><input id="probability_filter" type="text" class="form-control"></div>';

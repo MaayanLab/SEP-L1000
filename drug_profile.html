@@ -56,7 +56,7 @@
 
       $(document).ready(function(){
   $.getJSON('get_drug_se.php', {'pert_id' : pert_id}, function(json){ // load predicted SEs for the drug
-    var table = $('<table class="table table-hover table-striped" id="table_se"><thead><tr><th>UMLS Concept ID</th><th>probability</th><th>Name</th><th>in SIDER?</th></tr></thead></table>')
+    var table = $('<table class="table table-hover table-striped" id="table_se"><thead><tr><th>Name</th><th>UMLS Concept ID</th><th>probability</th><th>in SIDER?</th></tr></thead></table>')
     var tbody = objs2TableRows(json, 'umls_id', 'se_profile.html?umls_id=');
 
     table.append(tbody);
@@ -65,7 +65,7 @@
   }).then(function(){
     $("#table_se").dataTable({
       dom: 'Rlfrtip',
-      colReorder:{order: [0,2,1,3]},
+      colReorder:{order: [1,0,2,3]},
       "order": [[1, 'desc']],
       "deferRender": true,
     });
