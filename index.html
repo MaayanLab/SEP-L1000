@@ -26,14 +26,14 @@
           <div class="panel panel-success">
             <div class="panel-heading">Side Effect Network Visualization on a Canvas</div>
             <div class="panel-body">
-              <div class="col-md-6">
+              <div class="col-sm-7">
                 <div id="wrap">
-                  <input id="searchBox" placeholder="Type to search pathways"></input>
+                  <input id="searchBox" placeholder="Type to search side effects"></input>
                   <div id="selectionPanel"></div>
                   <div id="stage"></div>
                 </div>
               </div>
-              <div class="col-md-6" id="nodeInfo"></div>
+              <div class="col-sm-5" id="nodeInfo"></div>
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@
 
 <!-- Templates -->
 <script type="text/template" id="selectionBar-template">
-  <div class='selectionBar' pathways='<span class="tooltipSpan"><%= term %></span><ul class="tooltipUl"><% _.each(autoCompleteOptions, function(option) { %> <li><%= option %></li> <% }); %> </ul>'>
+  <div class='selectionBar' side effects='<span class="tooltipSpan"><%= term %></span><ul class="tooltipUl"><% _.each(autoCompleteOptions, function(option) { %> <li><%= option %></li> <% }); %> </ul>'>
     <div class='selectionBarText'><%= trimmedTerm %></div>
     <div class='destroy'></div>
   </div>

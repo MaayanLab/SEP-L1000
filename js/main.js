@@ -33,7 +33,7 @@ var Dots = Backbone.Collection.extend({
 	model:Dot,
 	url: function(){
 		// return "http://127.0.0.1/scatter/" + this.dbTable;
-		return window.location.href + "data/" + this.dbTable;
+		return 'data/' + this.dbTable;
 	},
 
 	initialize: function(models,options){
@@ -521,8 +521,8 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	d3.select(nodeInfoSelector + ' span').remove();
 	d3.select(nodeInfoSelector)
 		.append("div")
-		.style("height", '1000px')
-		.style("overflow", "auto")
+		// .style("height", '1000px')
+		// .style("overflow", "auto")
 	var div = d3.select(nodeInfoSelector + ' div'); // the container to put node info
 	div.append("span")
 		.text("Side effect: ")
