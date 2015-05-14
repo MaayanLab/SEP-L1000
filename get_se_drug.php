@@ -1,4 +1,4 @@
-<?php 
+<?php # get drugs given se
 require_once 'login.php';
 include 'functions.php';
 

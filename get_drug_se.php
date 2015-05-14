@@ -28,14 +28,16 @@ for ($i=0; $i < count($side_effects); $i++) {
 	$se_id = $side_effects[$i]['se_id'];
 	$query = "SELECT umls_id,name FROM side_effects WHERE id='$se_id'";//to get names of side effects
 	$se_meta = query_mysql($query, $conn);
-	$arr_out[$i]['name'] = $se_meta[0]['name'];
-	$arr_out[$i]['umls_id'] = $se_meta[0]['umls_id'];
-	$p_val = $side_effects[$i]['p_val'];
-	$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
-	if (in_array($se_id, $known_side_effect_ids)) {
-		$arr_out[$i]['sider'] = 'yes';
-	} else {
-		$arr_out[$i]['sider'] = 'no';
+	if ($se_meta[0]['umls_id']) { // filter out se without umls_id
+		$arr_out[$i]['name'] = $se_meta[0]['name'];
+		$arr_out[$i]['umls_id'] = $se_meta[0]['umls_id'];
+		$p_val = $side_effects[$i]['p_val'];
+		$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
+		if (in_array($se_id, $known_side_effect_ids)) {
+			$arr_out[$i]['sider'] = 'yes';
+		} else {
+			$arr_out[$i]['sider'] = 'no';
+		}		
 	}
 }
 
