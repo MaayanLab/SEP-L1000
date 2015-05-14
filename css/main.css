@@ -1,0 +1,107 @@
+#wrap {
+  width: 605px;
+  margin-left: auto;
+  margin-right: auto; }
+
+.svgBorder {
+  border-style: solid;
+  border-color: #656468;
+  /*border-color: white;*/ }
+
+.overlay {
+  fill: none;
+  pointer-events: all; }
+
+text {
+  cursor: default; }
+
+.highlight {
+  fill: none;
+  stroke: #49b0c9;
+  stroke-width: 2;
+  /*stroke-opacity:0.5;*/
+  pointer-events: none; }
+
+#searchBox {
+  width: 600px;
+  background-color: #465257;
+  color: azure;
+  border-color: #656468;
+  /*border-color: azure;*/
+  border-width: 1px;
+  padding-top: 2px;
+  text-align: center;
+  padding-bottom: 2px;
+  border-style: solid;
+  margin-bottom: 0.5px; }
+
+.custom-autocomplete-ul {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.6em; }
+
+a {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #656468; }
+
+#below {
+  margin-top: 10px; }
+
+#selectionPanel {
+  text-align: left;
+  font-size: 0; }
+
+.selectionBar {
+  background-color: #49b0c9;
+  height: 18px;
+  width: 151.2px;
+  display: inline-block;
+  text-align: left;
+  font-size: 0px; }
+
+.selectionBarText {
+  width: 136.2px;
+  height: 18px;
+  display: inline-block;
+  text-align: center;
+  font-size: 15px;
+  cursor: default; }
+
+.destroy {
+  position: relative;
+  top: 2px;
+  display: none;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  background: url(img/destroy.png) no-repeat;
+  background-size: 100%; }
+
+.selectionBar:hover .destroy {
+  display: inline-block; }
+
+.destroy:hover {
+  background-position: 0 -13px; }
+
+.tooltipSpan {
+  margin: 0;
+  font-style: bold;
+  color: white; }
+
+.tooltipUl {
+  margin: 0;
+  font-size: 0.6em;
+  text-align: left;
+  padding-left: 1.5em;
+  color: white; }
+
+.custom-ui-tooltip {
+  background-color: rgba(0, 0, 0, 0.5); }
+
+#colorPickerButton {
+  position: absolute;
+  top: 121;
+  left: 187.5;
+  width: 50;
+  display: none; }

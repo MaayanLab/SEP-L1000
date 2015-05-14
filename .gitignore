@@ -2,3 +2,4 @@
 *.svg
 error_log
 *.pyc
+python/*.json
