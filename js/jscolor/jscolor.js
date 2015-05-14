@@ -375,7 +375,7 @@ var jscolor = {
 
 
 		this.showPicker = function(foreignTarget) {
-			console.log(foreignTarget);
+			// console.log(foreignTarget);
 			if(typeof foreignTarget !== 'undefined') {target = foreignTarget};
 			if(!isPickerOwner()) {
 				var tp = jscolor.getElementPos(target); // target pos

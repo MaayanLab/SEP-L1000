@@ -6,7 +6,6 @@ var Dot = Backbone.Model.extend({
 	defaults:{
 		"size": 10,
 		"color": "white"
-		// "info": null
 	},
 
 	// parse numeric string attributes to numbers
@@ -19,7 +18,7 @@ var Dot = Backbone.Model.extend({
 	}, 
 
 	// send a GET request to the API to get infomation about the Dot
-	getInfo : function(){
+	getInfo: function(){
 		var self = this;
 		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: 0.7, filter: true}, function(json) {
 			displayNodeInfo("#nodeInfo", self, json)
@@ -69,6 +68,12 @@ var Dots = Backbone.Collection.extend({
 		this.autoCompleteList = _.uniq( this.map(function(dot){
 			return dot.get('label')}) );
 		this.trigger("autoCompleteListGot");
+	},
+
+	// to preload note info
+	preloadNodeInfo: function(id) {
+		var model = this.get(id);
+		model.getInfo();
 	},
 });
 
@@ -304,6 +309,9 @@ var DotsViewGeometryZoom = DotsView.extend({
  		this.currentScale = 1;	
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
+
+ 		this.dots.preloadNodeInfo("C0001824"); 
+
  	},
 
  	zoomTransform: function(){
@@ -333,6 +341,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  				   .each(function(d){
  							var D = d;
  							var size = D[2] > 12 ? D[2]+1:12;
+ 							// console.log(D)
  							var highlight = self.svg.append('rect')
  									.datum([D[0],D[1]])
  									.attr('transform',
@@ -444,6 +453,7 @@ var selectionPanel = new SelectionPanel;
 var colorPicker = new ColorPicker;
 
 appPathway.onStage();
+
 searchModel.listenTo(appPathway.dots,'autoCompleteListGot',function(){
 	this.set("autoCompleteList",appPathway.dots.autoCompleteList);
 });
@@ -452,9 +462,6 @@ searchModel.listenTo(appPathway.dots,'autoCompleteListGot',function(){
 appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
 selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
 colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
-
-
-appPathway.dots
 
 
 // var app = new DotsView({dbTable:"ljp4"});
@@ -514,8 +521,6 @@ function downloadLink(linkID,svgID){
 		
 
 displayNodeInfo = function(nodeInfoSelector, model, info) { 
-	// take the selector of DOM to contain node info
-	// must be used after `findElement()` and before `preloadNodeInfo()`
 	// var findSelector = this.findSelector
 	d3.select(nodeInfoSelector + ' div').remove();
 	d3.select(nodeInfoSelector + ' span').remove();
