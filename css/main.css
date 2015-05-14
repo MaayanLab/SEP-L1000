@@ -39,11 +39,11 @@ text {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   font-size: 0.6em; }
-
+/*
 a {
   text-decoration: underline;
   cursor: pointer;
-  color: #656468; }
+  color: #656468; }*/
 
 #below {
   margin-top: 10px; }

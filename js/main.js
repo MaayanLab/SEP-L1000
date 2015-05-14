@@ -6,6 +6,7 @@ var Dot = Backbone.Model.extend({
 	defaults:{
 		"size": 10,
 		"color": "white"
+		// "info": null
 	},
 
 	// parse numeric string attributes to numbers
@@ -15,6 +16,14 @@ var Dot = Backbone.Model.extend({
 		response.x = parseFloat(response.x);
 		response.y = parseFloat(response.y);
 		return response;
+	}, 
+
+	// send a GET request to the API to get infomation about the Dot
+	getInfo : function(){
+		var self = this;
+		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: 0.7, filter: true}, function(json) {
+			displayNodeInfo("#nodeInfo", self, json)
+		});
 	}
 });
 
@@ -24,9 +33,7 @@ var Dots = Backbone.Collection.extend({
 	model:Dot,
 	url: function(){
 		// return "http://127.0.0.1/scatter/" + this.dbTable;
-		// return "http://127.0.0.1/scatter/mapJS/data/pathway_final.json";
-		return "http://127.0.0.1/sep-l1000/data/side_effect_network.json";
-    // return "http://www.maayanlab.net/temp/mapdb/pathwayServer/" + this.dbTable;
+		return window.location.href + "data/" + this.dbTable;
 	},
 
 	initialize: function(models,options){
@@ -67,10 +74,6 @@ var Dots = Backbone.Collection.extend({
 
 
 
-
-
-
-
 // view part begins
 var DotView = Backbone.View.extend({
 
@@ -107,13 +110,14 @@ var DotView = Backbone.View.extend({
 		
 	  	var self = this; // to access the model inside the click callback
 		g.on('click', function(event) {
-			console.log(self.model.get('label'));
-		});		  
+			self.model.getInfo();			
+		});
 
 		return this;
 	},
 
 });
+
 
 
 var DotsView = Backbone.View.extend({
@@ -255,7 +259,7 @@ var DotsView = Backbone.View.extend({
  	},
 
  	highlightSearchTerm:function(event){
- 		console.log(event.term);
+ 		// console.log(event.term);
  		d3.selectAll('g').filter(function(d){ return d[3]==event.term;})
  						.call(function(selection){
  							var D = selection.datum();
@@ -320,7 +324,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  	},
 
  	highlightSearchTerm:function(event){
- 		console.log(event);
+ 		// console.log(event);
  		var self = this;
  		var highlights = [];
  		this.svg.selectAll('g')
@@ -399,7 +403,7 @@ var SearchView = Backbone.View.extend({
 					 highlightOptions = [selectedTerm];
 				}
 
-				console.log(selectedTerm);
+				// console.log(selectedTerm);
 				self.trigger("searchTermSelected",
 								{term:selectedTerm.toLowerCase(),
 								 autoCompleteOptions:highlightOptions});
@@ -432,7 +436,7 @@ var SearchView = Backbone.View.extend({
 
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
-var appPathway = new DotsViewGeometryZoom({dbTable:"pathway_final",maxScale:20,
+var appPathway = new DotsViewGeometryZoom({dbTable:"side_effect_network",maxScale:20,
 		textShowThres:5,sizeScale:0.1,scaleExponent:1});
 
 // interaction views. Only appear after certain interaction acitivities.
@@ -449,6 +453,8 @@ appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTe
 selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
 colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
 
+
+appPathway.dots
 
 
 // var app = new DotsView({dbTable:"ljp4"});
@@ -506,3 +512,67 @@ function downloadLink(linkID,svgID){
 	});  
 }
 		
+
+displayNodeInfo = function(nodeInfoSelector, model, info) { 
+	// take the selector of DOM to contain node info
+	// must be used after `findElement()` and before `preloadNodeInfo()`
+	// var findSelector = this.findSelector
+	d3.select(nodeInfoSelector + ' div').remove();
+	d3.select(nodeInfoSelector + ' span').remove();
+	d3.select(nodeInfoSelector)
+		.append("div")
+		.style("height", '1000px')
+		.style("overflow", "auto")
+	var div = d3.select(nodeInfoSelector + ' div'); // the container to put node info
+	div.append("span")
+		.text("Side effect: ")
+		.append("a")
+		.text(model.get('label'))
+		.attr('href', 'se_profile.html?umls_id='+model.get('id'))
+		.attr('target', '_blank');
+	div.append('br');
+	div.append('span')
+		.text('UMLS ID: ')
+		.append('a')
+		.text(model.get('id'))
+		.attr('href', 'se_profile.html?umls_id='+model.get('id'))
+		.attr('target', '_blank');
+	var table = div.append('table')
+		.attr('class', 'table table-hover table-striped')
+	var th = table.append('thead').append('tr');
+	th.append('td').attr('width', "70%").text('Drugs');
+	th.append('td').attr('width', "30%").text('probability');
+	var tbody = table.append('tbody')
+
+	// sort genes based on p-values 
+	sortedGenePval = _.sortBy(info, function(o) { return -o.p_val });
+	// use d3 to bind data)
+	var trs = tbody.selectAll('tr').data(sortedGenePval)
+		.enter()
+		.append('tr')
+	var tdDrug = trs.append('td')
+		.text(function(d){return [d.name]})
+	tdDrug.append('span').text(' ')	
+	tdDrug.append('a')
+		.attr('class', 'glyphicon glyphicon-info-sign')
+		.attr('data-toggle', 'tooltip')
+		.attr('data-placement', 'top')
+		.attr('title', function(d){return 'more info about '+d.name;})
+		.attr('href', function(d){return 'drug_profile.html?pert_id='+d.pert_id});
+
+	// if (findSelector !== null) { // bind find anchor to the tdDrug if findSelector is set
+	// 	tdDrug.append('span').text(' ')
+	// 	tdDrug.append('a')
+	// 		.attr('class', 'glyphicon glyphicon-search')
+	// 		.attr('data-toggle', 'tooltip')
+	// 		.attr('data-placement', 'top')
+	// 		.attr('title', function(d){return 'display side effects for '+genes[d[0]];})
+	// 		.on('click', function(d){
+	// 			canvasObj.findByGenesAndFillNode(d[0])
+	// 		})
+	// };
+	var fmt = d3.format(".2f")
+	trs.append('td')
+		.text(function(d){return fmt(d.p_val)} ) // pval
+};
+

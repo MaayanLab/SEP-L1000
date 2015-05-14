@@ -10,6 +10,10 @@ if (isset($_GET['probability'])) {
 	$probability = 0.75;
 }
 
+if (isset($_GET['filter'])) { // whether to filter out known connections
+	$filter = $_GET['filter'];
+}
+
 $conn = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 if ($conn->connect_error) {
   trigger_error('Database connection failed: ' . $conn->connect_error, E_USER_ERROR);
@@ -31,16 +35,27 @@ foreach ($known_drugs as $key => $line) {
 $arr_out = array();
 for ($i=0; $i < count($drugs); $i++) { 
 	$drug_id = $drugs[$i]['drug_id'];
-	$query = "SELECT pert_id,pert_iname FROM drugs_lincs WHERE id='$drug_id'";//to get names of pert_ids
-	$drug_meta = query_mysql($query, $conn);
-	$arr_out[$i]['name'] = $drug_meta[0]['pert_iname'];
-	$arr_out[$i]['pert_id'] = $drug_meta[0]['pert_id'];
-	$p_val = $drugs[$i]['p_val'];
-	$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
-	if (in_array($drug_id, $known_drug_ids)) {
-		$arr_out[$i]['sider'] = 'yes';
-	} else {
-		$arr_out[$i]['sider'] = 'no';
+	$write_this = True; // whether to write this drug out
+
+	if (isset($filter)) {
+		if (in_array($drug_id, $known_drug_ids)) {
+			$write_this = False;
+		}
+	}
+	if ($write_this) {
+		$query = "SELECT pert_id,pert_iname FROM drugs_lincs WHERE id='$drug_id'";//to get names of pert_ids
+		$drug_meta = query_mysql($query, $conn);
+		$arr_out[$i]['name'] = $drug_meta[0]['pert_iname'];
+		$arr_out[$i]['pert_id'] = $drug_meta[0]['pert_id'];
+		$p_val = $drugs[$i]['p_val'];
+		$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
+		if (!isset($filter)) {
+			if (in_array($drug_id, $known_drug_ids)) {
+				$arr_out[$i]['sider'] = 'yes';
+			} else {
+				$arr_out[$i]['sider'] = 'no';
+			}			
+		}
 	}
 }
 
