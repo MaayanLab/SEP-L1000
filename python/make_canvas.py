@@ -34,13 +34,30 @@ mat = mat[:, m]
 se_names = np.array(se_names)[m]
 print mat.shape
 
+## make gmt file with se as terms and drugs as genes
+ses_to_exclude = set()
+d_se_drugs = {}
+pert_ids = np.array(pert_ids)
+for se, p_vals in zip(se_names, mat.T):
+	mask = p_vals > P_CUTOFF
+	if mask.sum() > 5000:
+		print se, mask.sum()
+		ses_to_exclude.add(se)
+	else:
+		drugs = pert_ids[mask]
+		d_se_drugs[se] = drugs
+
+write_gmt(d_se_drugs, HOME+'/Documents/N2C/Sets2Networks/ET100_GOtCS_AUC_%s_proba_%s_flip.gmt' %(AUC_CUTOFF, P_CUTOFF))
+
+
 ## make gmt file with drug as term and se as genes
-d_gmt = {}
+d_drug_ses = {}
 for pert_id, p_vals in zip(pert_ids, mat):
 	mask = p_vals > P_CUTOFF
-	SEs = [d_pt_umls[pt] for pt in se_names[mask] if d_pt_umls[pt] is not None]
+	SEs = [d_pt_umls[pt] for pt in se_names[mask] if d_pt_umls[pt] is not None and pt not in ses_to_exclude]
 	if len(SEs) != 0:
-		d_gmt[pert_id] = SEs
+		d_drug_ses[pert_id] = SEs
 
-write_gmt(d_gmt, HOME+'/Documents/N2C/Sets2Networks/ET100_GOtCS_AUC_%s_proba_%s.gmt' %(AUC_CUTOFF, P_CUTOFF))
+write_gmt(d_drug_ses, HOME+'/Documents/N2C/Sets2Networks/ET100_GOtCS_AUC_%s_proba_%s.gmt' %(AUC_CUTOFF, P_CUTOFF))
+
 
