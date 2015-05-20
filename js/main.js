@@ -106,7 +106,7 @@ var DotView = Backbone.View.extend({
 		 .append('title')
 		 .text(this.model.get('label'));
 
-	  g.append('svg:text').attr('fill','white')
+	  g.append('svg:text').attr('fill','black')
 	  					  .attr('text-anchor','middle')
 	  					  //.attr('y',-1*this.model.get('size'))
 	  					  .style('font-size',this.model.get('size')/3.5)
@@ -292,7 +292,7 @@ var DotsView = Backbone.View.extend({
 
 var DotsViewGeometryZoom = DotsView.extend({
 
-	afterFetchInitialize: function(){
+	afterFetchInitialize: function(){ // called after the view init
 		this.stageWidth = $(this.el).parent().width();
 
  		this.stageHeight = this.dots.transformRange(this.stageWidth,
@@ -302,17 +302,30 @@ var DotsViewGeometryZoom = DotsView.extend({
 
  		this.zoomTransform = _.bind(this.zoomTransform,this);
 
+ 		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale]).on("zoom", this.zoomTransform);
+
  		this.svg = d3.select(this.el)
  						.attr('width',this.stageWidth)
  						.attr('height',this.stageHeight)
  						.attr('class','svgBorder')
- 						.call(d3.behavior.zoom()
- 			.scaleExtent([1, this.maxScale]).on("zoom", this.zoomTransform))
+ 						// .call(d3.behavior.zoom()
+ 			// .scaleExtent([1, this.maxScale]).on("zoom", this.zoomTransform))
+						.call(this.zoom)
  						.append('g');
+
 
  		this.currentScale = 1;	
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
+
+ 		var self = this;
+ 		$("#zoom_in").on('click', function(){
+ 			zoomByFactor(self, 1.2)
+ 		});
+ 		$("#zoom_out").on('click', function(){
+ 			zoomByFactor(self, 0.8)
+ 		});
+
 
  		this.dots.preloadNodeInfo("C0001824"); 
 
@@ -385,10 +398,10 @@ $.widget("q.customAutocomplete",$.ui.autocomplete,{
 
 var SearchView = Backbone.View.extend({
 
-
-
 	initialize: function(){
 		this.$el = $('#searchBox');
+		this.width = this.$el.parent().width();
+		this.$el.width(this.width - 4);
 		this.minLength = 3;
 		this.listenTo(this.model,'change:autoCompleteList',this.updateList);
 		this.allTerm = '';
@@ -466,6 +479,9 @@ searchModel.listenTo(appPathway.dots,'autoCompleteListGot',function(){
 appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
 selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
 colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
+
+
+
 
 
 // var app = new DotsView({dbTable:"ljp4"});
@@ -583,5 +599,21 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	var fmt = d3.format(".2f")
 	trs.append('td')
 		.text(function(d){return fmt(d.p_val)} ) // pval
+};
+
+zoomByFactor = function(dotsView, factor) { // for zooming svg after button click
+	var scale = dotsView.zoom.scale();
+	var extent = dotsView.zoom.scaleExtent();
+	var newScale = scale * factor;
+	if (extent[0] <= newScale && newScale <= extent[1]) {
+		var t = dotsView.zoom.translate();
+		var c = [dotsView.stageWidth / 2, dotsView.stageHeight / 2];
+		dotsView.zoom
+		.scale(newScale)
+		.translate(
+		[c[0] + (t[0] - c[0]) / scale * newScale, 
+		c[1] + (t[1] - c[1]) / scale * newScale])
+		.event(dotsView.svg.transition().duration(350));
+	}
 };
 
