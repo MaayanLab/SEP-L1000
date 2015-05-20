@@ -98,7 +98,8 @@ def make_network_json(layout_df, d_id_name, d_id_category, outfn=None):
 
 
 
-DF_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/ET100_GOtCS_AUC_0.75_proba_0.75_significance_scores_matrix.txt'
+# DF_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/ET100_GOtCS_AUC_0.75_proba_0.75_significance_scores_matrix.txt'
+DF_FN =HOME+'/Documents/Zichen_Projects/drug_se_prediction/Sets2Networks/ET100_GOtCS_AUC_0.7_proba_0.75_prediction_only_flipped_significance_scores_matrix.txt'
 GML_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effect_network.gml'
 CSV_FN = GML_FN.replace('.gml', '.csv')
 JSON_FN = CSV_FN.replace('.csv', '.json')

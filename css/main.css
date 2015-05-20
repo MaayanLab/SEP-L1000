@@ -1,5 +1,5 @@
 #wrap {
-  width: 605px;
+  /*width: 605px;*/
   margin-left: auto;
   margin-right: auto; }
 
@@ -23,7 +23,7 @@ text {
   pointer-events: none; }
 
 #searchBox {
-  width: 600px;
+  /*width: 600px;*/
   background-color: #465257;
   color: azure;
   border-color: #656468;

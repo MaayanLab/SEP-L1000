@@ -150,6 +150,7 @@ var DotsView = Backbone.View.extend({
  		//override view's el property
  		this.el = document.createElementNS("http://www.w3.org/2000/svg", 
  			this.tagName);
+
  		this.dots = new Dots([],{dbTable:this.dbTable});
  		this.listenTo(this.dots, 'sync', this.afterFetchInitialize);
  		// call back
@@ -292,9 +293,12 @@ var DotsView = Backbone.View.extend({
 var DotsViewGeometryZoom = DotsView.extend({
 
 	afterFetchInitialize: function(){
+		this.stageWidth = $(this.el).parent().width();
 
  		this.stageHeight = this.dots.transformRange(this.stageWidth,
  			this.paddingWidth, this.sizeScale);
+
+ 		
 
  		this.zoomTransform = _.bind(this.zoomTransform,this);
 
