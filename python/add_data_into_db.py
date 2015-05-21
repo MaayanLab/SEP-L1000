@@ -4,6 +4,7 @@ from orm import *
 import os, sys
 import MySQLdb
 import numpy as np
+import cPickle as pickle
 
 from os.path import expanduser
 
@@ -50,11 +51,17 @@ print len(aucs)
 print np.percentile(aucs, 75)
 print aucs[aucs > 0.7].shape
 
-mat, pert_ids, se_names = read_df(HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_ETs100_proba_df_n20338x1053.txt')
+mat, pert_ids, se_names = read_df(HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF1000_proba_df_n20338x1053.txt')
 print mat.shape
 se_names = np.array(se_names)
 
 d_se_auc = dict(zip(se_names, aucs))
+d_umls_soc = pickle.load(open(HOME+'/Documents/Zichen_Projects/drug_se_prediction/d_umls_soc.p', 'rb'))
+d_soc_color = pickle.load(open(HOME+'/Documents/Zichen_Projects/drug_se_prediction/d_soc_color.p', 'rb'))
+
+## add soc table from d_soc_color
+for soc, color in d_soc_color.items():
+	instance = get_or_create(session, SOC, name=soc, color=color)
 
 ## transfer side_effects and add AUROC 
 conn = MySQLdb.connect(host='localhost',user='root', passwd='',db='maaya0_SEP')
@@ -71,6 +78,10 @@ for row in cur:
 		kwargs['auroc'] = d_se_auc[kwargs['name']]
 	else:
 		kwargs['auroc'] = None
+	if kwargs['umls_id'] in d_umls_soc:
+		kwargs['soc'] = d_umls_soc[kwargs['umls_id']]
+	else:
+		kwargs['soc'] = None
 	instance = get_or_create(session, SideEffect, **kwargs)
 
 

@@ -69,9 +69,18 @@ class SideEffect(Base):
 	name = Column(String(256))
 	synonyms = Column(Text)
 	auroc = Column(Float)
+	soc = Column(String(128))
 
 	def __repr__(self):
 		return "<SideEffect(name='%s')>" % self.name
+
+
+### below are classes that are not connected to other tables
+class SOC(Base):
+	__tablename__ = 'soc'
+	id = Column(Integer, primary_key=True)
+	name = Column(String(128), unique=True)
+	color = Column(String(8))
 
 
 class DrugDrugbank(Base):

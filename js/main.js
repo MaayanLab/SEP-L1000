@@ -20,7 +20,7 @@ var Dot = Backbone.Model.extend({
 	// send a GET request to the API to get infomation about the Dot
 	getInfo: function(){
 		var self = this;
-		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: 0.7, filter: true}, function(json) {
+		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: 0.6, filter: true}, function(json) {
 			displayNodeInfo("#nodeInfo", self, json)
 		});
 	}
@@ -108,10 +108,9 @@ var DotView = Backbone.View.extend({
 
 	  g.append('svg:text').attr('fill','black')
 	  					  .attr('text-anchor','middle')
-	  					  //.attr('y',-1*this.model.get('size'))
-	  					  .style('font-size',this.model.get('size')/3.5)
-	  					  .text(this.model.get('label'))
-	  					  .attr('display','none');
+	  					  .style('font-size',function(d){ return d[2]/3.5; })
+	  					  .text(function(d){ return d[3] })
+	  					  .attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'}); // whether to display text at first view
 		
 	  	var self = this; // to access the model inside the click callback
 		g.on('click', function(event) {
@@ -250,16 +249,16 @@ var DotsView = Backbone.View.extend({
 
  	zoomTransform: function(){
  		
- 		var thres = this.textShowThres;
- 		if(d3.event.scale>=thres&&this.currentScale<thres){
- 			this.texts.attr('display','default');
- 			this.currentScale = d3.event.scale;
- 		};
+ 		// var thres = this.textShowThres;
+ 		// if(d3.event.scale>=thres&&this.currentScale<thres){
+ 		// 	this.texts.attr('display','default');
+ 		// 	this.currentScale = d3.event.scale;
+ 		// };
 
- 		if(d3.event.scale<=thres&&this.currentScale>thres){
- 			this.texts.attr('display','none');
- 			this.currentScale = d3.event.scale;
- 		};
+ 		// if(d3.event.scale<=thres&&this.currentScale>thres){
+ 		// 	this.texts.attr('display','none');
+ 		// 	this.currentScale = d3.event.scale;
+ 		// };
 
  		this.zoomables.attr("transform",this.circleTransform);
  	},
@@ -308,8 +307,6 @@ var DotsViewGeometryZoom = DotsView.extend({
  						.attr('width',this.stageWidth)
  						.attr('height',this.stageHeight)
  						.attr('class','svgBorder')
- 						// .call(d3.behavior.zoom()
- 			// .scaleExtent([1, this.maxScale]).on("zoom", this.zoomTransform))
 						.call(this.zoom)
  						.append('g');
 
@@ -317,6 +314,9 @@ var DotsViewGeometryZoom = DotsView.extend({
  		this.currentScale = 1;	
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
+
+ 		// display the text regardless of the scale
+ 		// this.texts.attr('display', 'default');
 
  		var self = this;
  		$("#zoom_in").on('click', function(){
@@ -463,7 +463,7 @@ var SearchView = Backbone.View.extend({
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
 var appPathway = new DotsViewGeometryZoom({dbTable:"side_effect_network",maxScale:20,
-		textShowThres:5,sizeScale:0.1,scaleExponent:1});
+		textShowThres:1.1,sizeScale:0.11,scaleExponent:1});
 
 // interaction views. Only appear after certain interaction acitivities.
 var selectionPanel = new SelectionPanel;

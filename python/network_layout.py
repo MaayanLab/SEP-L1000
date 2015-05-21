@@ -50,36 +50,46 @@ def mds(dissimilarity_matrix, plot=False):
 def network_layout(prediction_df, gmt_fn, d_pt_umls, outfn=None):
 	## make a Graph object and write to gml for Gephi to 
 	## do the layout
-	mat, pert_ids, se_names = read_df(prediction_df)
-	umls_ids = [d_pt_umls[se] for se in se_names]
-	d_gmt = read_gmt(gmt_fn)
-	keeped_umls_ids = d_gmt.keys()
+	# mat, pert_ids, se_names = read_df(prediction_df)
+	# umls_ids = [d_pt_umls[se] for se in se_names]
+	# d_gmt = read_gmt(gmt_fn)
+	# keeped_umls_ids = d_gmt.keys()
 
-	# subset columns
-	mask_keep = np.in1d(umls_ids, keeped_umls_ids)
-	umls_ids_kept = np.array(umls_ids)[mask_keep] # cids for mat
-	mat = mat[:, mask_keep]
+	# # subset columns
+	# mask_keep = np.in1d(umls_ids, keeped_umls_ids)
+	# umls_ids_kept = np.array(umls_ids)[mask_keep] # cids for mat
+	# mat = mat[:, mask_keep]
 
-	num_ses = len(umls_ids_kept)
+	# num_ses = len(umls_ids_kept)
 
-	adj_matrix = np.ones((num_ses, num_ses))
+	# adj_matrix = np.ones((num_ses, num_ses))
 
-	for i, j in combinations(range(num_ses), 2):
-		corr, _ = pearsonr(mat[:, i], mat[:, j])
-		adj_matrix[i, j] = corr
-		adj_matrix[j, i] = corr
+	# for i, j in combinations(range(num_ses), 2):
+	# 	corr, _ = pearsonr(mat[:, i], mat[:, j])
+	# 	adj_matrix[i, j] = corr
+	# 	adj_matrix[j, i] = corr
 	
-	m = adj_matrix > 0.25 # cutoff for pearson corr
-	adj_matrix = adj_matrix * m
-	degrees = adj_matrix.sum(axis=0)
+	# m = adj_matrix > 0.25 # cutoff for pearson corr
+	# adj_matrix = adj_matrix * m
+	# degrees = adj_matrix.sum(axis=0)
+	# G = nx.from_numpy_matrix(adj_matrix)
+
+	d_gmt = read_gmt(gmt_fn)
+	umls_ids_kept = d_gmt.keys()
+	adj_matrix = jaccard_matrix(d_gmt)
+
+	m = adj_matrix > 0.001
+	# degrees = adj_matrix.sum(axis=0)
+	adj_matrix = adj_matrix * m.astype(int)
+	
 	G = nx.from_numpy_matrix(adj_matrix)
 
 	print 'G: ',G.number_of_edges(), G.number_of_nodes()
 
 	for i in range(adj_matrix.shape[0]):
-		G.node[i]['size'] = degrees[i]
+		# G.node[i]['size'] = degrees[i]
 		# G.node[i]['size'] = len(d_gmt[umls_ids_kept[i]])
-		# G.node[i]['size'] = G.degree(i)
+		G.node[i]['size'] = G.degree(i)
 		G.node[i]['id'] = umls_ids_kept[i]
 
 	if outfn is not None:	
@@ -87,14 +97,14 @@ def network_layout(prediction_df, gmt_fn, d_pt_umls, outfn=None):
 	return G
 
 
-def make_network_json(layout_df, d_id_name, d_id_category, outfn=None):
+def make_network_json(layout_df, d_id_name, d_id_category, d_category_color, outfn=None):
 	## wrapper for making a json for viewing
-	COLORS40 = COLORS20 + COLORS20b
-	print len(COLORS40)
+
 	objs = []
 
 	i = 0
 	all_categories = []
+
 
 	with open (layout_df) as f:
 		header = next(f).split(',')
@@ -110,11 +120,8 @@ def make_network_json(layout_df, d_id_name, d_id_category, outfn=None):
 			size = float(sl[size_idx]) * 35
 			name = d_id_name[id]
 			category = d_id_category[id]
-			if category not in all_categories:
-				all_categories.append(category)
-			color_idx = all_categories.index(category)
-			color = COLORS40[color_idx][1:]
-			obj = {'id':id, 'x':x, 'y':y, 'size':size, 'label':name, 'category':category, 'color':color}
+			color = d_category_color[category]
+			obj = {'id':id, 'x':x, 'y':y, 'size':size, 'label':name, 'color':color}
 			objs.append(obj)
 	json.dump(objs, open(outfn, 'wb'))
 	return
@@ -125,9 +132,9 @@ def make_network_json(layout_df, d_id_name, d_id_category, outfn=None):
 # DF_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/Sets2Networks/ET100_GOtCS_AUC_0.7_proba_0.75_prediction_only_flipped_significance_scores_matrix.txt'
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/Sets2Networks/ET100_GOtCS_AUC_0.7_proba_0.75_prediction_only.gmt'
 
-PREDICTION_DF = HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF100_proba_df_n20338x1053.txt'
+PREDICTION_DF = HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF1000_proba_df_n20338x1053.txt'
 
-GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF100_GOtCS_AUC_0.7_proba_0.75.gmt'
+GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only.gmt'
 GML_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effect_network.gml'
 CSV_FN = GML_FN.replace('.gml', '.csv')
 JSON_FN = CSV_FN.replace('.csv', '.json')
@@ -151,7 +158,13 @@ for soc, pts in d_soc_pt.items():
 # 	if len(d_umls_soc[pt]) != 1:
 # 		print pt, d_umls_soc[pt]
 
+COLORS40 = COLORS20 + COLORS20b
+COLORS40 = map(lambda x : x[1:], COLORS40) # remove "#"
+d_soc_color = dict(zip(set(d_umls_soc.values()), COLORS40))
+
+pickle.dump(d_umls_soc, open(HOME+'/Documents/Zichen_Projects/drug_se_prediction/d_umls_soc.p', 'wb'))
+pickle.dump(d_soc_color, open(HOME+'/Documents/Zichen_Projects/drug_se_prediction/d_soc_color.p', 'wb'))
 
 # G = network_layout(PREDICTION_DF, GMT_FN, d_pt_umls, outfn=GML_FN)
-make_network_json(CSV_FN, d_umls_pt, d_umls_soc, outfn=JSON_FN)
+make_network_json(CSV_FN, d_umls_pt, d_umls_soc, d_soc_color, outfn=JSON_FN)
 
