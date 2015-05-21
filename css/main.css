@@ -4,8 +4,8 @@
   margin-right: auto; }
 
 .svgBorder {
-  border-style: solid;
-  border-color: #656468;
+  /*border-style: solid;*/
+  /*border-color: #656468;*/
   /*border-color: white;*/ }
 
 .overlay {
@@ -24,21 +24,22 @@ text {
 
 #searchBox {
   /*width: 600px;*/
-  background-color: #465257;
-  color: azure;
-  border-color: #656468;
+  /*background-color: #465257;*/
+  /*color: azure;*/
+  /*border-color: #656468;*/
   /*border-color: azure;*/
-  border-width: 1px;
+  /*border-width: 1px;*/
   padding-top: 2px;
   text-align: center;
   padding-bottom: 2px;
-  border-style: solid;
+  /*border-style: solid;*/
   margin-bottom: 0.5px; }
 
 .custom-autocomplete-ul {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 0.6em; }
+  /*background-color: rgba(0, 0, 0, 0.5);*/
+  /*color: white;*/
+  /*font-size: 0.6em; */
+}
 /*
 a {
   text-decoration: underline;
@@ -97,7 +98,8 @@ a {
   color: white; }
 
 .custom-ui-tooltip {
-  background-color: rgba(0, 0, 0, 0.5); }
+  /*background-color: rgba(0, 0, 0, 0.5); */
+}
 
 #colorPickerButton {
   position: absolute;

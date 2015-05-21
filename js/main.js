@@ -546,8 +546,8 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	d3.select(nodeInfoSelector + ' span').remove();
 	d3.select(nodeInfoSelector)
 		.append("div")
-		// .style("height", '1000px')
-		// .style("overflow", "auto")
+		.style("height", '1000px')
+		.style("overflow", "auto")
 	var div = d3.select(nodeInfoSelector + ' div'); // the container to put node info
 	div.append("span")
 		.text("Side effect: ")

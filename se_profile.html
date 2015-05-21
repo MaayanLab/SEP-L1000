@@ -58,10 +58,14 @@
           $(document).ready(function(){
             $.getJSON('se_profile.php', {umls_id: umls_id}, function(json){
               var div = $('<div class="panel-body"></div>');
+              dl = $('<dl class="dl-horizontal"></dl>');
               $(".panel-info .panel-heading").html('<span class="glyphicon glyphicon-info-sign"></span> '+json['name']);
-              div.append('<h3>Name:</h3>'+json['name']);
-              div.append('<h3>Synonyms:</h3>'+json['synonyms']);
-              div.append('<h3>Link to SIDER:</h3>'+siderUrlAnchor);
+              dl.append('<dt>Name:</dt><dd>'+json['name'] + '</dd>' );
+              dl.append('<dt>Synonyms:</dt><dd>'+json['synonyms'] + '</dd>' );
+              dl.append('<dt>Link to SIDER:</dt><dd>'+siderUrlAnchor + '</dd>' );
+              dl.append('<dt>System Organ Class:</dt><dd>'+json['soc'] + '</dd>' );
+              dl.append('<dt>Predictability:</dt><dd>AUROC = ' + json['auroc'] + '</dd>' );
+              div.append(dl)
               $('.panel-info').append(div);
             });
 
