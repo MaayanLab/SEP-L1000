@@ -2,6 +2,8 @@
  * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ source:
+    https://github.com/IronSummitMedia/startbootstrap-simple-sidebar/blob/gh-pages/css/simple-sidebar.css
  */
 
 /* Toggle Styles */
@@ -26,7 +28,7 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #000;
+    /*background: #000;*/
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
