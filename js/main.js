@@ -327,7 +327,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  		});
 
 
- 		this.dots.preloadNodeInfo("C0001824"); 
+ 		this.dots.preloadNodeInfo("C0029445"); 
 
  	},
 
@@ -463,7 +463,7 @@ var SearchView = Backbone.View.extend({
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
 var appPathway = new DotsViewGeometryZoom({dbTable:"side_effect_network",maxScale:20,
-		textShowThres:1.1,sizeScale:0.11,scaleExponent:1});
+		textShowThres:1.1,sizeScale:0.1,scaleExponent:1});
 
 // interaction views. Only appear after certain interaction acitivities.
 var selectionPanel = new SelectionPanel;
@@ -498,6 +498,18 @@ colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicke
 // var appPathway = new DotsView({dbTable:"pathway_final",maxScale:20,
 // 		textShowThres:18,sizeScale:0.1,scaleExponent:1});
 
+
+// display legend
+$.getJSON('get_legend.php', {type: appPathway.dbTable}, function(json) {
+
+	for (var i = json.length - 1; i >= 0; i--) {
+		var name = json[i].name;
+		var color = "#" + json[i].color;
+		d3.select("#colorLegend").append('span').style('background-color', color).style('color', 'white').text(name)
+		d3.select("#colorLegend").append('span').text(', ')
+	};
+
+});
 
 
 
@@ -565,6 +577,8 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped')
 	var th = table.append('thead').append('tr');
+	// th.append('td').attr('width', "70%").text('Drugs');
+	// th.append('td').attr('width', "30%").text('probability');
 	th.append('td').attr('width', "70%").text('Drugs');
 	th.append('td').attr('width', "30%").text('probability');
 	var tbody = table.append('tbody')
