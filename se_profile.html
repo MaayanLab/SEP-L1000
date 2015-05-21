@@ -83,7 +83,7 @@
               data: {umls_id: umls_id},
               dataType: 'json',
               success: function(json){
-                var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>in SIDER?</th></tr></thead></table>');
+                var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>already labeled?</th></tr></thead></table>');
                 $(".panel-primary .panel-body").html(table);
                 var tbody = objs2TableRowsWithStatus(json, 'pert_id', 'drug_profile.html?pert_id=', '.progress-bar');
                 table.append(tbody);

@@ -301,7 +301,19 @@ var DotsViewGeometryZoom = DotsView.extend({
 
  		this.zoomTransform = _.bind(this.zoomTransform,this);
 
- 		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale]).on("zoom", this.zoomTransform);
+		this.x = d3.scale.pow().exponent(this.scaleExponent)
+								.domain([0,this.stageWidth])
+ 								.range([0,this.stageWidth]);
+
+ 		this.y = d3.scale.pow().exponent(this.scaleExponent)
+ 								.domain([0,this.stageHeight])
+ 								.range([0,this.stageHeight]);
+
+
+ 		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale])
+ 						.x(this.x)
+ 						.y(this.y)
+ 						.on("zoom", this.zoomTransform);
 
  		this.svg = d3.select(this.el)
  						.attr('width',this.stageWidth)
@@ -344,8 +356,15 @@ var DotsViewGeometryZoom = DotsView.extend({
  			this.currentScale = d3.event.scale;
  		};
 
- 		this.svg.attr("transform","translate(" + 
- 			d3.event.translate + ")scale(" + d3.event.scale + ")");
+		var t = this.zoom.translate();
+		var maxx = d3.max(this.x.range());
+		var maxy = d3.max(this.y.range());
+
+		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
+		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
+
+ 		this.svg.attr("transform","translate(" + tx + "," + ty
+ 			+ ")scale(" + d3.event.scale + ")");
  	},
 
  	highlightSearchTerm:function(event){
@@ -462,7 +481,7 @@ var SearchView = Backbone.View.extend({
 
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
-var appPathway = new DotsViewGeometryZoom({dbTable:"side_effect_network",maxScale:20,
+var appPathway = new DotsViewGeometryZoom({dbTable:"side_effect_network.json",maxScale:20,
 		textShowThres:1.1,sizeScale:0.1,scaleExponent:1});
 
 // interaction views. Only appear after certain interaction acitivities.
