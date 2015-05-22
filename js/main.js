@@ -345,7 +345,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  			zoomByFactor(self, 1.2)
  		});
  		$("#zoom_out").on('click', function(){
- 			zoomByFactor(self, 0.8)
+ 			zoomByFactor(self, 0.9)
  		});
 
 
@@ -359,11 +359,13 @@ var DotsViewGeometryZoom = DotsView.extend({
  		if(d3.event.scale>=thres&&this.currentScale<thres){
  			this.texts.attr('display','default');
  			this.currentScale = d3.event.scale;
+ 			d3.select("#zoom_out").attr('disabled', null);
  		};
 
  		if(d3.event.scale<=thres&&this.currentScale>thres){
  			this.texts.attr('display','none');
  			this.currentScale = d3.event.scale;
+ 			d3.select("#zoom_out").attr('disabled', true);
  		};
 
 		var t = this.zoom.translate();
