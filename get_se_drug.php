@@ -12,6 +12,8 @@ if (isset($_GET['probability'])) {
 
 if (isset($_GET['filter'])) { // whether to filter out known connections
 	$filter = $_GET['filter'];
+} else {
+	$filter = False;
 }
 
 $conn = new mysqli($db_hostname, $db_username, $db_password, $db_database);
@@ -37,11 +39,10 @@ for ($i=0; $i < count($drugs); $i++) {
 	$drug_id = $drugs[$i]['drug_id'];
 	$write_this = True; // whether to write this drug out
 
-	if (isset($filter)) {
-		if (in_array($drug_id, $known_drug_ids)) {
-			$write_this = False;
-		}
+	if (in_array($drug_id, $known_drug_ids) && $filter) {
+		$write_this = False;
 	}
+	
 	if ($write_this) {
 		$query = "SELECT pert_id,pert_iname FROM drugs_lincs WHERE id='$drug_id'";//to get names of pert_ids
 		$drug_meta = query_mysql($query, $conn);
@@ -49,7 +50,7 @@ for ($i=0; $i < count($drugs); $i++) {
 		$arr_out[$i]['pert_id'] = $drug_meta[0]['pert_id'];
 		$p_val = $drugs[$i]['p_val'];
 		$arr_out[$i]['p_val'] = sprintf('%0.2f', $p_val);
-		if (!isset($filter)) {
+		if (!$filter) {
 			if (in_array($drug_id, $known_drug_ids)) {
 				$arr_out[$i]['sider'] = 'yes';
 			} else {

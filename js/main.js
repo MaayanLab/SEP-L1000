@@ -5,7 +5,9 @@ var Dot = Backbone.Model.extend({
 // x, y will only be set in the instance
 	defaults:{
 		"size": 10,
-		"color": "white"
+		"color": "white", 
+		"probability": 0.6, // probability cutoff
+		"filter" : 1 // whether to only return prediction
 	},
 
 	// parse numeric string attributes to numbers
@@ -20,7 +22,7 @@ var Dot = Backbone.Model.extend({
 	// send a GET request to the API to get infomation about the Dot
 	getInfo: function(){
 		var self = this;
-		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: 0.6, filter: true}, function(json) {
+		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: this.get('probability'), filter: this.get('filter')}, function(json) {
 			displayNodeInfo("#nodeInfo", self, json)
 		});
 	}
@@ -30,6 +32,7 @@ var Dot = Backbone.Model.extend({
 var Dots = Backbone.Collection.extend({
 
 	model:Dot,
+	
 	url: function(){
 		// return "http://127.0.0.1/scatter/" + this.dbTable;
 		return 'data/' + this.dbTable;
@@ -73,7 +76,11 @@ var Dots = Backbone.Collection.extend({
 	// to preload note info
 	preloadNodeInfo: function(id) {
 		var model = this.get(id);
+		var filter = +!$("#nodeInfoCheckbox").is(":checked");
+		var proba = $("#probaCutoff").val();
+		model.set({"filter": filter, "probability": proba});
 		model.getInfo();
+		window.currentDot = id; // the global variable to store the current Dot id
 	},
 });
 
@@ -123,7 +130,11 @@ var DotView = Backbone.View.extend({
 
 	  	var self = this; // to access the model inside the click callback
 		g.on('click', function(event) {
-			self.model.getInfo();			
+			window.currentDot = self.model.get('id'); // update the global variable with the clicked Dot
+			var filter = +!$("#nodeInfoCheckbox").is(":checked");
+			var proba = $("#probaCutoff").val();
+			self.model.set({"filter": filter, "probability": proba});
+			self.model.getInfo();
 		});
 
 		return this;
@@ -204,26 +215,6 @@ var DotsView = Backbone.View.extend({
 
 
  	},
-
- 	// reRender:function(){
- 	// 	//not test function
- 	// 	this.stageHeight = this.dots.transformRange(this.stageWidth,
- 	// 		this.paddingWidth);
-
-		
-		// this.x = d3.scale.linear().domain([0,this.stageWidth])
- 	// 							  .range([0,this.stageWidth]);
-
- 	// 	this.y = d3.scale.linear().domain([0,this.stageHeight])
- 	// 							  .range([0,this.stageHeight]);
- 		
- 	// 	this.svg.attr('width',this.stageWidth)
- 	// 			.attr('height',this.stageHeight)
- 	// 			.select('rect')
- 	// 			.attr("width",this.stageWidth)
- 	// 			.attr("height",this.stageHeight);
-
- 	// },
 
  	onStage:function(){
  		var putOn = this.el;
@@ -350,6 +341,12 @@ var DotsViewGeometryZoom = DotsView.extend({
 
 
  		this.dots.preloadNodeInfo("C0029445"); 
+
+ 		// to load the node info again with updated params
+ 		$("#nodeInfoUpdate").on('click', function(event) {
+ 			event.preventDefault();
+ 			self.dots.preloadNodeInfo(window.currentDot)
+ 		});
 
  	},
 
@@ -608,23 +605,26 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped')
 	var th = table.append('thead').append('tr');
-	// th.append('td').attr('width', "70%").text('Drugs');
-	// th.append('td').attr('width', "30%").text('probability');
 	th.append('td').attr('width', "70%").text('Drugs');
 	th.append('td').attr('width', "30%").text('probability');
 	var tbody = table.append('tbody')
 
 	// sort genes based on p-values 
 	sortedGenePval = _.sortBy(info, function(o) { return -o.p_val });
+	// console.log(sortedGenePval)
 	// use d3 to bind data)
 	var trs = tbody.selectAll('tr').data(sortedGenePval)
 		.enter()
 		.append('tr')
 	var tdDrug = trs.append('td')
-		.text(function(d){return [d.name]})
-	tdDrug.append('span').text(' ')	
-	tdDrug.append('a')
-		.attr('class', 'glyphicon glyphicon-info-sign')
+		.append('a')
+		.text(function(d){
+			if (d.sider === 'yes') {
+				return [d.name + '*'];	
+			} else {
+				return [d.name];
+			}
+		})
 		.attr('data-toggle', 'tooltip')
 		.attr('data-placement', 'top')
 		.attr('title', function(d){return 'more info about '+d.name;})
