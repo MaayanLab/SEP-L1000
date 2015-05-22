@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 
 if (isset($_GET['type'])) {
 	$type = $_GET['type'];
-	if ($type == 'side_effect_network') {
+	if ($type == 'side_effect_network.json') {
 		$query = "SELECT name,color FROM soc";
 	} else {
 		$query = "SELECT pert_icollection FROM drugs_lincs GROUP BY pert_icollection";

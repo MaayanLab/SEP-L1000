@@ -106,12 +106,21 @@ var DotView = Backbone.View.extend({
 		 .append('title')
 		 .text(this.model.get('label'));
 
-	  g.append('svg:text').attr('fill','black')
-	  					  .attr('text-anchor','middle')
-	  					  .style('font-size',function(d){ return d[2]/3.5; })
-	  					  .text(function(d){ return d[3] })
-	  					  .attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'}); // whether to display text at first view
+		var texts = g.append('svg:text').attr('fill','black')
+			.attr('text-anchor','middle')
+			.style('font-size',function(d){ return d[2]/2; })
+			.attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'}); // whether to display text at first view
 		
+		texts.each(function(d) {
+			var el = d3.select(this);
+			var words = d[3].split(' ');
+		    for (var i = 0; i < words.length; i++) {
+		        var tspan = el.append('tspan').text(words[i]);
+		        if (i > 0)
+		            tspan.attr('x', 0).attr('dy', '1.2em');
+		    }
+		});
+
 	  	var self = this; // to access the model inside the click callback
 		g.on('click', function(event) {
 			self.model.getInfo();			
@@ -326,6 +335,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  		this.currentScale = 1;	
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
+
 
  		// display the text regardless of the scale
  		// this.texts.attr('display', 'default');
@@ -649,4 +659,3 @@ zoomByFactor = function(dotsView, factor) { // for zooming svg after button clic
 		.event(dotsView.svg.transition().duration(350));
 	}
 };
-
