@@ -1,0 +1,98 @@
+<div id="wrapper">
+  <div id="sidebar-wrapper">
+
+    <div class="well">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="probaCutoff" class="col-sm-8 control-label">Probability cutoff:</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="probaCutoff" placeholder="0.6" value="0.6">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="nodeInfoCheckbox"> Show labeled drugs
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button type="submit" class="btn btn-default" id="nodeInfoUpdate">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <span>* indicates the drug is labeled with the side effect</span>
+    </div>  
+    <div id="nodeInfo"></div>
+
+  </div>
+  <div id="page-content-wrapper">
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-success">
+            <div class="panel-heading">Side Effect Network Visualization</div>
+            <div class="panel-body">
+              <div class="btn-group-xs" role="group">
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Sidebar</a>    
+                <button id="zoom_in" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-zoom-in"></span> </button>
+                <button id="zoom_out" type="button" class="btn btn-default" disabled> <span class="glyphicon glyphicon-zoom-out"></span> </button>
+              </div>
+              <div id="wrap">
+                <input id="searchBox" placeholder="Type to search side effects"></input>
+                <div id="selectionPanel"></div>
+                <div id="stage"></div>
+                <div id="colorLegend"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Gene expression profiling of <a target='_blank' href="browse_drug.html"> <span id="drug_count"></span> small-molecule compounds</a> using the <a target='_blank' href="http://lincscloud.org">L1000 technology</a> were processed in combination with <a target='_blank' href="http://sideeffects.embl.de/">SIDER</a> side effects resource to build a classifier that is used to predict likely <a target='_blank' href="browse_se.html">side effects</a> for pre-clinical drugs. </h4>
+          <h4> <span id="se_count"></span> side effects from SIDER were predicted.</h4>
+        </div>
+      </div>  
+    </div>
+
+  </div>
+</div>
+
+<!-- Templates -->
+<script type="text/template" id="selectionBar-template">
+<div class='selectionBar' side effects='<span class="tooltipSpan"><%= term %></span><ul class="tooltipUl"><% _.each(autoCompleteOptions, function(option) { %> <li><%= option %></li> <% }); %> </ul>'>
+<div class='selectionBarText'><%= trimmedTerm %></div>
+<div class='destroy'></div>
+</div>
+</script>
+<!-- ColorPicker UI -->
+<input style="display:none" id = 'colorPickerInput' class='color' />
+<button id='colorPickerButton' style='position:absolute'> OK </button>
+
+<script src="js/jscolor/jscolor.js"></script>
+
+<script src="js/SelectionPanel.js"></script>
+<script src="js/colorpick.js"></script>
+<script src="js/main.js" ></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $.getJSON('get_stats.php', function(json, textStatus) {
+    $("#drug_count").text(json['drugs']);
+    $("#se_count").text(json['side_effects']);
+  });
+
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+})
+</script>
