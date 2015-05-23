@@ -33,7 +33,7 @@ $(document).ready(function(){
             ]
         },            
         "fnRowCallback": function(row, data, idx){
-            $('td:eq(1)', row).wrapInner('<a href=drug_profile.html?pert_id=' + data["pert_id"] + '></a>');
+            $('td:eq(1)', row).wrapInner('<a href="#drug/' + data["pert_id"] + '""></a>');
             $('td:eq(2)', row).wrapInner('<a target="_blank" href="http://pubchem.ncbi.nlm.nih.gov/summary/summary.cgi?cid=' + data["pubchem_cid"] + '""></a>');
         }
     });

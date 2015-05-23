@@ -593,14 +593,14 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.text("Side effect: ")
 		.append("a")
 		.text(model.get('label'))
-		.attr('href', 'se_profile.html?umls_id='+model.get('id'))
+		.attr('href', '#se/'+model.get('id'))
 		.attr('target', '_blank');
 	div.append('br');
 	div.append('span')
 		.text('UMLS ID: ')
 		.append('a')
 		.text(model.get('id'))
-		.attr('href', 'se_profile.html?umls_id='+model.get('id'))
+		.attr('href', '#se/'+model.get('id'))
 		.attr('target', '_blank');
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped')
@@ -628,7 +628,7 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.attr('data-toggle', 'tooltip')
 		.attr('data-placement', 'top')
 		.attr('title', function(d){return 'more info about '+d.name;})
-		.attr('href', function(d){return 'drug_profile.html?pert_id='+d.pert_id});
+		.attr('href', function(d){return '#drug/'+d.pert_id});
 
 	// if (findSelector !== null) { // bind find anchor to the tdDrug if findSelector is set
 	// 	tdDrug.append('span').text(' ')

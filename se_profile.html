@@ -1,58 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Prediction of drug side effects</title>
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body data-spy="scroll" data-target=".col-md-2" style="position:relative;" data-offset="0">
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.1/js/jquery.dataTables.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js"></script>    
-    <script src="js/dataTables.colReorder.js"></script>
-    <script src="js/dataTables.tableTools.min.js"></script>    
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/functions.js"></script>
-    <div id="nav"></div>
-    <script type="text/javascript">
-      $("#nav").load("nav.html");
-    </script>
+  <div id="body" data-spy="scroll" data-target=".col-md-2" style="position:relative;" data-offset="0">
 
     <div class="container">
-        <div class="row">
-          <div class="col-md-2">
-            <div class="affix" role="tablist">
-              <ul class="nav nav-pills nav-stacked">
-                <li><a href="#se_info">Side effect information</a></li>
-                <li><a href="#se_drugs">Drugs predicted to<br>cause this side effect</a></li>
-              </ul>
-            </div>
-          </div>
-        <div class="col-md-10">
-            <div class="panel panel-info" id="se_info">
-              <div class="panel-heading"></div>
-            </div>
-            <div class="panel panel-primary" id="se_drugs">
-              <div class="panel-heading">Predicted drugs associated with this side effect</div>
-              <div class="panel-body"><div class="row text-center"><img src="img/ajax-loader.gif"></div></div>
-            </div>
+      <div class="row">
+        <div class="col-md-2">
+          <div class="affix" role="tablist">
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#se_info">Side effect information</a></li>
+              <li><a href="#se_drugs">Drugs predicted to<br>cause this side effect</a></li>
+            </ul>
           </div>
         </div>
-        <script type="text/javascript">
-          var $_GET = getQueryParams(document.location.search);
-          var umls_id = $_GET['umls_id'];
+        <div class="col-md-10">
+          <div class="panel panel-info" id="se_info">
+            <div class="panel-heading"></div>
+          </div>
+          <div class="panel panel-primary" id="se_drugs">
+            <div class="panel-heading">Predicted drugs associated with this side effect</div>
+            <div class="panel-body"><div class="row text-center"><img src="img/ajax-loader.gif"></div></div>
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript">
+          // var $_GET = getQueryParams(document.location.search);
+          // var umls_id = $_GET['umls_id'];
+          var umls_id = document.location.hash.split('/').slice(-1)[0];
           var siderUrlAnchor = '<a target="_blank" href="http://sideeffects.embl.de/se/' + umls_id +'">'+umls_id+'</a>'
 
           $(document).ready(function(){
@@ -85,7 +56,7 @@
               success: function(json){
                 var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>already labeled?</th></tr></thead></table>');
                 $(".panel-primary .panel-body").html(table);
-                var tbody = objs2TableRowsWithStatus(json, 'pert_id', 'drug_profile.html?pert_id=', '.progress-bar');
+                var tbody = objs2TableRowsWithStatus(json, 'pert_id', '#drug/', '.progress-bar');
                 table.append(tbody);
               },
               complete: function(){
@@ -98,8 +69,9 @@
                 // var filter = '<div class="input-group"><span class="input-group-btn"><button id="filter_btn" class="btn btn-primary" type="button">Filter by probability ></button></span><input id="probability_filter" type="text" class="form-control"></div>';
                 // $("div.toolbar").html(filter)
               }
-            });            
-          });
-</script>
-    </div>
-    
+            });
+
+});
+  </script>
+</div>
+

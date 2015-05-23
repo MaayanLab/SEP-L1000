@@ -43,12 +43,12 @@
                 <li id="links"><a href="#links">External links</a></li>
                 <li id="contact"><a href="#contact">Contact us</a></li>
               </ul>
-              <form class="navbar-form navbar-right" role="search" action="search.html" method="get">
+              <form class="navbar-form navbar-right" role="search" action="#search/">
                 <div class="form-group">              
                   <div class="input-group input-group-md">
                     <input type="text" class="form-control" name="search" placeholder="Search for drugs/side effects" />
                     <span class="input-group-btn">
-                      <input type="submit" class="btn btn-primary" value="Search" />
+                      <a href="#search/" class="btn btn-primary" title="search">Search</a>
                     </span>
                   </div>
                 </form>
@@ -63,9 +63,10 @@
         <script src="js/jquery-1.11.1.min.js"></script>
         <script src="js/jquery-ui.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.1/js/jquery.dataTables.js"></script>
+        <script src="js/dataTables.colReorder.js"></script>
         <script src="js/dataTables.tableTools.min.js"></script>
         <script src="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-        
+
         <script src="js/bootstrap.min.js"></script>
 
         <script src="js/functions.js"></script>
@@ -75,8 +76,14 @@
         <script src="js/router.js"></script>
         <script>
           $(document).ready(function() {
-            $.getScript('js/ga.js');  
+            $.getScript('js/ga.js');
             searchAutocomplete("[name=search]");
+            $("[title=search]").on('click', function(event) {
+              var searchStr = $("[name=search]").val();
+              $(this).attr('href', function(){
+                return "#search/" + searchStr;
+              });
+            });
           });
         </script>
 

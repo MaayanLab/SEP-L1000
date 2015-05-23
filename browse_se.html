@@ -33,7 +33,7 @@ $(document).ready(function(){
     },
 
     "fnRowCallback": function(row, data, idx){
-        $('td:eq(1)', row).wrapInner('<a href=se_profile.html?umls_id=' + data["umls_id"] + '></a>');
+        $('td:eq(1)', row).wrapInner('<a href="#se/' + data["umls_id"] + '"></a>');
     }
 });
 });
