@@ -605,8 +605,13 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped')
 	var th = table.append('thead').append('tr');
-	th.append('td').attr('width', "70%").text('Drugs');
-	th.append('td').attr('width', "30%").text('probability');
+	// th.append('td').attr('width', "35%").text('Drugs');
+	// th.append('td').attr('width', "35%").text('ID');
+	// th.append('td').attr('width', "30%").text('probability');
+	th.append('td').text('Drugs');
+	th.append('td').text('ID');
+	th.append('td').text('probability');
+
 	var tbody = table.append('tbody')
 
 	// sort genes based on p-values 
@@ -641,6 +646,8 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	// 			canvasObj.findByGenesAndFillNode(d[0])
 	// 		})
 	// };
+	trs.append('td')
+		.text(function(d){ return d.pert_id;} );
 	var fmt = d3.format(".2f")
 	trs.append('td')
 		.text(function(d){return fmt(d.p_val)} ) // pval
