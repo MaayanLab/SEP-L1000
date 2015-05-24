@@ -7,7 +7,7 @@ $umls_id = $_GET['umls_id'];
 if (isset($_GET['probability'])) {
 	$probability = floatval($_GET['probability']);
 } else {
-	$probability = 0.75;
+	$probability = 0.6;
 }
 
 if (isset($_GET['filter'])) { // whether to filter out known connections
