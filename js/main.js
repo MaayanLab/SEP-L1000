@@ -116,8 +116,9 @@ var DotView = Backbone.View.extend({
 		var texts = g.append('svg:text').attr('fill','black')
 			.attr('text-anchor','middle')
 			.style('font-size',function(d){ return d[2]/2; })
-			.attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'}); // whether to display text at first view
-		
+			.attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'})
+			.attr('class',function(d){ return d[2] > 25 ? 'display-default' : 'display-none'}); // whether to display text at first view
+
 		texts.each(function(d) {
 			var el = d3.select(this);
 			var words = d[3].split(' ');
@@ -354,13 +355,15 @@ var DotsViewGeometryZoom = DotsView.extend({
  		
  		var thres = this.textShowThres;
  		if(d3.event.scale>=thres&&this.currentScale<thres){
- 			this.texts.attr('display','default');
+ 			// this.texts.attr('display','default');
+ 			d3.selectAll('.display-none').attr('display', 'default');
  			this.currentScale = d3.event.scale;
  			d3.select("#zoom_out").attr('disabled', null);
  		};
 
  		if(d3.event.scale<=thres&&this.currentScale>thres){
- 			this.texts.attr('display','none');
+ 			// this.texts.attr('display','none');
+ 			d3.selectAll('.display-none').attr('display', 'none');
  			this.currentScale = d3.event.scale;
  			d3.select("#zoom_out").attr('disabled', true);
  		};
@@ -586,8 +589,8 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	d3.select(nodeInfoSelector + ' span').remove();
 	d3.select(nodeInfoSelector)
 		.append("div")
-		.style("height", '1000px')
-		.style("overflow", "auto")
+		// .style("height", '1000px')
+		// .style("overflow", "auto")
 	var div = d3.select(nodeInfoSelector + ' div'); // the container to put node info
 	div.append("span")
 		.text("Side effect: ")
