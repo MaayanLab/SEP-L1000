@@ -390,12 +390,11 @@ var DotsViewGeometryZoom = DotsView.extend({
  							var D = d;
  							var size = D[2] > 12 ? D[2]+1:12;
  							// console.log(D)
- 							var highlight = self.svg.append('rect')
+ 							var highlight = self.svg.append('circle')
  									.datum([D[0],D[1]])
  									.attr('transform',
- 					'translate(' + (D[0]-size/2) + "," + (D[1]-size/2) +')')
- 									.attr('width',size)
- 									.attr('height',size)
+ 					'translate(' + D[0] + "," + D[1] +')')
+ 									.attr('r', size)
  									.attr('class','highlight');
  							highlights.push(highlight);				
  						});
@@ -606,7 +605,7 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.attr('href', '#se/'+model.get('id'))
 		.attr('target', '_blank');
 	var table = div.append('table')
-		.attr('class', 'table table-hover table-striped')
+		.attr('class', 'table table-hover table-striped table-condensed')
 	var th = table.append('thead').append('tr');
 	// th.append('td').attr('width', "35%").text('Drugs');
 	// th.append('td').attr('width', "35%").text('ID');
