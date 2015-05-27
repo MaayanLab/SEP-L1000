@@ -512,8 +512,6 @@ colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicke
 
 
 
-
-
 // var app = new DotsView({dbTable:"ljp4"});
 // app.onStage();
 

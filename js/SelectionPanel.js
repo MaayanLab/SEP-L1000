@@ -53,7 +53,7 @@ var SelectionBar = Backbone.View.extend({
 		// The options here passed parameter object
 		this.term = options.term;
 		options.trimmedTerm = this.trimTerm(options.term);
-		this.$el = $(_.template($('#selectionBar-template').html(),options));
+		// this.$el = $(_.template($('#selectionBar-template').html(),options));
 		this.el = this.$el[0];
 		this.highlights = options.highlights;
 		
