@@ -158,6 +158,7 @@ var DotsView = Backbone.View.extend({
  		textShowThres: 2,
  		maxScale: 8,
  		scaleExponent: 1,
+ 		zoomTranslate: [],
  	},
 
 
@@ -295,6 +296,7 @@ var DotsViewGeometryZoom = DotsView.extend({
 	afterFetchInitialize: function(){ // called after the view init
 		this.stageWidth = $(this.el).parent().width();
 
+
  		this.stageHeight = this.dots.transformRange(this.stageWidth,
  			this.paddingWidth, this.sizeScale);
 
@@ -310,6 +312,8 @@ var DotsViewGeometryZoom = DotsView.extend({
  								.domain([0,this.stageHeight])
  								.range([0,this.stageHeight]);
 
+		console.log(this.stageWidth)
+		console.log(this.x(this.stageWidth))
 
  		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale])
  						.x(this.x)
@@ -354,6 +358,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  	zoomTransform: function(){
  		
  		var thres = this.textShowThres;
+ 		// this.currentScale = d3.event.scale;
  		if(d3.event.scale>=thres&&this.currentScale<thres){
  			// this.texts.attr('display','default');
  			d3.selectAll('.display-none').attr('display', 'default');
@@ -369,14 +374,45 @@ var DotsViewGeometryZoom = DotsView.extend({
  		};
 
 		var t = this.zoom.translate();
+		this.zoomTranslate = this.zoom.translate();
+
 		var maxx = d3.max(this.x.range());
 		var maxy = d3.max(this.y.range());
+
 
 		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
 		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
 
  		this.svg.attr("transform","translate(" + tx + "," + ty
  			+ ")scale(" + d3.event.scale + ")");
+ 	},
+
+ 	centerDot: function(event){
+ 		var self = this;
+
+ 		var dom = this.svg.selectAll('g')
+ 					.filter(function(d){ return d[3].toLowerCase()
+ 													.search(event.term)>-1;})
+ 					.each(function(d){
+ 						var D = d;
+						d3.select('g')
+							.transition().duration(250)
+							.attr('transform', function(){ // zoom to scale 1
+								var currentTransform = d3.transform(d3.select('g').attr("transform"))
+								var tx = currentTransform.translate[0]
+								var ty = currentTransform.translate[1]
+								return "translate("+tx+","+ty+ ")scale(1)"
+							})
+							.transition().duration(250)
+							.attr('transform', function(){
+								// var currentTransform = d3.transform(d3.select('g').attr("transform"))
+								// var currentScale = currentTransform.scale[0]
+			        	    	var tx = self.x(self.stageWidth/2 - D[0]) // currentScale
+			        	    	var ty = self.y(self.stageWidth/2 - D[1]) // currentScale
+								return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")";
+							})
+ 					});
+
  	},
 
  	highlightSearchTerm:function(event){
@@ -398,9 +434,12 @@ var DotsViewGeometryZoom = DotsView.extend({
  									.attr('class','highlight');
  							highlights.push(highlight);				
  						});
+ 		this.centerDot(event)		   
  		event.highlights = highlights;
  		self.trigger('highlighted',event);
  	},
+
+
 });
 
 var SearchModel = Backbone.Model.extend({
@@ -506,6 +545,7 @@ searchModel.listenTo(appPathway.dots,'autoCompleteListGot',function(){
 });
 
 // events flow: first highlight terms in Map then add corresponding bar.
+// appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
 appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
 selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
 colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
