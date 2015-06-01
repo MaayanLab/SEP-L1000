@@ -4,8 +4,24 @@
   }
 }
 
+#sidebar-wrapper {
+  z-index: 10;
+  width: 400px;
+  /*height: 100%;*/
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #eee;
+}
+
+#sidebar-wrapper .panel-heading{
+  cursor: move;
+}
+
+
 #wrap {
   /*width: 605px;*/
+  position: relative;
   margin-left: auto;
   margin-right: auto; }
 

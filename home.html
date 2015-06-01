@@ -1,5 +1,19 @@
-<div id="wrapper">
-  <div id="sidebar-wrapper">
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="colorLegend"></div>
+          <div class="btn-group-xs" role="group">
+            <button id="zoom_in" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-zoom-in"></span> </button>
+            <button id="zoom_out" type="button" class="btn btn-default" disabled> <span class="glyphicon glyphicon-zoom-out"></span> </button>
+          </div>
+          <input id="searchBox" placeholder="Type to search side effects"></input>
+          <div id="wrap">
+
+
+  <div id="sidebar-wrapper" class="panel panel-info">
+    <div class="panel-heading">Side effect information</div>
+    <div class="panel-body">
 
     <div class="well">
       <form class="form-horizontal">
@@ -27,26 +41,15 @@
         </div>
       </form>
     </div>
-
     <div>
       <span>* indicates the drug is labeled with the side effect</span>
     </div>  
     <div id="nodeInfo"></div>
-
+    </div>
   </div>
-  <div id="page-content-wrapper">
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div id="colorLegend"></div>
-          <div class="btn-group-xs" role="group">
-            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Sidebar</a>    
-            <button id="zoom_in" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-zoom-in"></span> </button>
-            <button id="zoom_out" type="button" class="btn btn-default" disabled> <span class="glyphicon glyphicon-zoom-out"></span> </button>
-          </div>
-          <div id="wrap">
-            <input id="searchBox" placeholder="Type to search side effects"></input>
+
+            
             <div id="selectionPanel"></div>
             <div id="stage"></div>
           </div>
@@ -61,8 +64,7 @@
       </div>  
     </div>
 
-  </div>
-</div>
+
 
 <!-- Templates -->
 <script type="text/template" id="selectionBar-template">
@@ -85,14 +87,16 @@
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 
+  $("#sidebar-wrapper").draggable();
+
   $.getJSON('get_stats.php', function(json, textStatus) {
     $("#drug_count").text(json['drugs']);
     $("#se_count").text(json['side_effects']);
   });
 
-  $("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-  });
+  // $("#menu-toggle").click(function(e) {
+  //   e.preventDefault();
+  //   $("#wrapper").toggleClass("toggled");
+  // });
 })
 </script>
