@@ -101,7 +101,7 @@ var DotView = Backbone.View.extend({
 
 	render: function(){
 		var g = d3.select(this.el).datum([this.model.get('x'), 
-		this.model.get('y'),this.model.get('size'),this.model.get('label')])
+		this.model.get('y'),this.model.get('size'),this.model.get('label'), this.model.get('id')])
 						  .attr('transform',function(d){ return 'translate(' +
 						  	d[0] + "," + d[1] + ")";})
 						  .attr('name','zoomable');
@@ -395,8 +395,8 @@ var DotsViewGeometryZoom = DotsView.extend({
  													.search(event.term)>-1;})
  					.each(function(d){
  						var D = d;
+ 						self.dots.preloadNodeInfo(D[4]);
 						d3.select('g')
-							.transition().duration(250)
 							.attr('transform', function(){
 								self.currentScale = 1
 								self.zoomTranslate = [0, 0]
@@ -416,6 +416,7 @@ var DotsViewGeometryZoom = DotsView.extend({
 						};
 						
  					});
+
  	},
 
  	highlightSearchTerm:function(event){
