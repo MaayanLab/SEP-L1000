@@ -4,7 +4,7 @@
     <div class="well">
       <form class="form-horizontal">
         <div class="form-group">
-          <label for="probaCutoff" class="col-sm-8 control-label"><p class="text-left">Probability cutoff:</p></label>
+          <label for="probaCutoff" class="col-sm-8 control-label"><p class="text-left">Probability cutoff: <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title="Cutoff for thresholding the drugs that are predicted to cause the side effect based on the probability produced by the predictive model."></span> </p></label>
           <div class="col-sm-4">
             <input type="text" class="form-control" id="probaCutoff" placeholder="0.6" value="0.6">
           </div>
@@ -14,6 +14,8 @@
             <div class="checkbox">
               <label>
                 <input type="checkbox" id="nodeInfoCheckbox"> Show labeled drugs
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title="Show drugs that are known to cause the side effect according to the package insert. These drugs are used to learn the model for the side effect."
+                ></span>
               </label>
             </div>
           </div>
@@ -81,6 +83,8 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+
   $.getJSON('get_stats.php', function(json, textStatus) {
     $("#drug_count").text(json['drugs']);
     $("#se_count").text(json['side_effects']);

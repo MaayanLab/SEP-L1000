@@ -41,6 +41,13 @@ var Router = Backbone.Router.extend({
 		});
 	},
 
+	methods: function(){
+		$(this.el).load("method.html", function() {
+			removeActive();
+			$("#methods").addClass('active');
+		});
+	},
+
 	links: function(){
 		$(this.el).load("links.html", function() {
 			removeActive();
