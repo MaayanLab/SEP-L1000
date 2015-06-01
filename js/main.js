@@ -312,8 +312,6 @@ var DotsViewGeometryZoom = DotsView.extend({
  								.domain([0,this.stageHeight])
  								.range([0,this.stageHeight]);
 
-		console.log(this.stageWidth)
-		console.log(this.x(this.stageWidth))
 
  		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale])
  						.x(this.x)
@@ -376,12 +374,15 @@ var DotsViewGeometryZoom = DotsView.extend({
 		var t = this.zoom.translate();
 		this.zoomTranslate = this.zoom.translate();
 
-		var maxx = d3.max(this.x.range());
-		var maxy = d3.max(this.y.range());
+		var maxx = d3.max(this.x.range()) + this.stageWidth ;
+		var maxy = d3.max(this.y.range()) + this.stageWidth ;
 
 
 		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
 		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
+
+		// tx = t[0]
+		// ty = t[1]
 
  		this.svg.attr("transform","translate(" + tx + "," + ty
  			+ ")scale(" + d3.event.scale + ")");
@@ -397,22 +398,24 @@ var DotsViewGeometryZoom = DotsView.extend({
  						var D = d;
 						d3.select('g')
 							.transition().duration(250)
-							.attr('transform', function(){ // zoom to scale 1
-								var currentTransform = d3.transform(d3.select('g').attr("transform"))
-								var tx = currentTransform.translate[0]
-								var ty = currentTransform.translate[1]
-								return "translate("+tx+","+ty+ ")scale(1)"
-							})
-							.transition().duration(250)
 							.attr('transform', function(){
-								// var currentTransform = d3.transform(d3.select('g').attr("transform"))
-								// var currentScale = currentTransform.scale[0]
-			        	    	var tx = self.x(self.stageWidth/2 - D[0]) // currentScale
-			        	    	var ty = self.y(self.stageWidth/2 - D[1]) // currentScale
-								return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")";
+								var currentTransform = d3.transform(d3.select('g').attr("transform"))
+								var currentScale = currentTransform.scale[0]
+								// self.currentScale = currentScale;
+			        	    	var tx = self.stageWidth/2 - D[0]
+			        	    	var ty = self.stageWidth/2 - D[1]
+			        	    	self.zoomTranslate = [tx, ty]
+								return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
 							})
+						// console.log(self.currentScale)	
+						// console.log(d3.transform(d3.select('g').attr("transform")).scale)
+						// var zoomFactor = 4/self.currentScale;
+						// var zoomFactor = 4/d3.transform(d3.select('g').attr("transform")).scale[0];
+						// console.log(zoomFactor)
+						// zoomByFactor(self, zoomFactor)
+						// console.log(self.currentScale)
+						// console.log(d3.transform(d3.select('g').attr("transform")).scale)
  					});
-
  	},
 
  	highlightSearchTerm:function(event){
@@ -546,9 +549,9 @@ searchModel.listenTo(appPathway.dots,'autoCompleteListGot',function(){
 
 // events flow: first highlight terms in Map then add corresponding bar.
 // appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
-appPathway.listenTo(searchView,"searchTermSelected",appPathway.highlightSearchTerm);
-selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
-colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
+appPathway.listenTo(searchView,"searchTermSelected",appPathway.centerDot);
+// selectionPanel.listenTo(appPathway,"highlighted",selectionPanel.addBar);
+// colorPicker.listenTo(selectionPanel,"selectionBarAppended",colorPicker.showPicker);
 
 
 
@@ -698,7 +701,8 @@ zoomByFactor = function(dotsView, factor) { // for zooming svg after button clic
 	var extent = dotsView.zoom.scaleExtent();
 	var newScale = scale * factor;
 	if (extent[0] <= newScale && newScale <= extent[1]) {
-		var t = dotsView.zoom.translate();
+		// var t = dotsView.zoom.translate();
+		var t = dotsView.zoomTranslate;
 		var c = [dotsView.stageWidth / 2, dotsView.stageHeight / 2];
 		dotsView.zoom
 		.scale(newScale)
@@ -706,5 +710,6 @@ zoomByFactor = function(dotsView, factor) { // for zooming svg after button clic
 		[c[0] + (t[0] - c[0]) / scale * newScale, 
 		c[1] + (t[1] - c[1]) / scale * newScale])
 		.event(dotsView.svg.transition().duration(350));
+		dotsView.currentScale = newScale;
 	}
 };
