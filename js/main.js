@@ -358,6 +358,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  		var thres = this.textShowThres;
  		// this.currentScale = d3.event.scale;
  		if(d3.event.scale>=thres&&this.currentScale<thres){
+ 		// if(d3.event.scale>=thres){	
  			// this.texts.attr('display','default');
  			d3.selectAll('.display-none').attr('display', 'default');
  			this.currentScale = d3.event.scale;
@@ -365,6 +366,7 @@ var DotsViewGeometryZoom = DotsView.extend({
  		};
 
  		if(d3.event.scale<=thres&&this.currentScale>thres){
+ 		// if(d3.event.scale<=thres){	
  			// this.texts.attr('display','none');
  			d3.selectAll('.display-none').attr('display', 'none');
  			this.currentScale = d3.event.scale;
@@ -374,15 +376,12 @@ var DotsViewGeometryZoom = DotsView.extend({
 		var t = this.zoom.translate();
 		this.zoomTranslate = this.zoom.translate();
 
-		var maxx = d3.max(this.x.range()) + this.stageWidth ;
-		var maxy = d3.max(this.y.range()) + this.stageWidth ;
+		var maxx = d3.max(this.x.range());
+		var maxy = d3.max(this.y.range());
 
 
 		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
 		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
-
-		// tx = t[0]
-		// ty = t[1]
 
  		this.svg.attr("transform","translate(" + tx + "," + ty
  			+ ")scale(" + d3.event.scale + ")");
@@ -399,22 +398,23 @@ var DotsViewGeometryZoom = DotsView.extend({
 						d3.select('g')
 							.transition().duration(250)
 							.attr('transform', function(){
-								var currentTransform = d3.transform(d3.select('g').attr("transform"))
-								var currentScale = currentTransform.scale[0]
-								// self.currentScale = currentScale;
+								self.currentScale = 1
+								self.zoomTranslate = [0, 0]
+								return null
+							})
+							.transition().duration(250).delay(250)
+							.attr('transform', function(){
 			        	    	var tx = self.stageWidth/2 - D[0]
 			        	    	var ty = self.stageWidth/2 - D[1]
 			        	    	self.zoomTranslate = [tx, ty]
 								return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
 							})
-						// console.log(self.currentScale)	
-						// console.log(d3.transform(d3.select('g').attr("transform")).scale)
-						// var zoomFactor = 4/self.currentScale;
-						// var zoomFactor = 4/d3.transform(d3.select('g').attr("transform")).scale[0];
-						// console.log(zoomFactor)
-						// zoomByFactor(self, zoomFactor)
-						// console.log(self.currentScale)
-						// console.log(d3.transform(d3.select('g').attr("transform")).scale)
+
+						if (self.currentScale < 3.9) {
+							var zoomFactor = 4.0/self.currentScale;
+							zoomByFactor(self, zoomFactor)
+						};
+						
  					});
  	},
 
@@ -697,11 +697,10 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 };
 
 zoomByFactor = function(dotsView, factor) { // for zooming svg after button click
-	var scale = dotsView.zoom.scale();
+	var scale = dotsView.currentScale
 	var extent = dotsView.zoom.scaleExtent();
 	var newScale = scale * factor;
 	if (extent[0] <= newScale && newScale <= extent[1]) {
-		// var t = dotsView.zoom.translate();
 		var t = dotsView.zoomTranslate;
 		var c = [dotsView.stageWidth / 2, dotsView.stageHeight / 2];
 		dotsView.zoom
