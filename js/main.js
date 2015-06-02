@@ -103,9 +103,10 @@ var DotView = Backbone.View.extend({
 		var g = d3.select(this.el).datum([this.model.get('x'), 
 		this.model.get('y'),this.model.get('size'),this.model.get('label'), this.model.get('id')])
 						  .attr('transform',function(d){ return 'translate(' +
-						  	d[0] + "," + d[1] + ")";})
-						  .attr('name','zoomable');
-						  
+						  	d[0] + "," + d[1] + ")";});
+		
+		g.selectAll("*").remove();
+
 		g.append('svg:circle')
 		 .datum([this.model.get('size')])
 		 .attr('r', function(d){ return d[0];})
@@ -116,7 +117,6 @@ var DotView = Backbone.View.extend({
 		var texts = g.append('svg:text').attr('fill','black')
 			.attr('text-anchor','middle')
 			.style('font-size',function(d){ return d[2]/2; })
-			.attr('display',function(d){ return d[2] > 25 ? 'default' : 'none'})
 			.attr('class',function(d){ return d[2] > 25 ? 'display-default' : 'display-none'}); // whether to display text at first view
 
 		texts.each(function(d) {
@@ -212,7 +212,6 @@ var DotsView = Backbone.View.extend({
  		// 					.attr("width",this.stageWidth)
  		// 					.attr("height",this.stageHeight);
  		this.addAll();
- 		this.zoomables = this.svg.selectAll('[name=zoomable]');
  		this.texts = this.svg.selectAll('text');
 
 
@@ -249,24 +248,7 @@ var DotsView = Backbone.View.extend({
  		return "translate(" + this.x(d[0]) + "," + this.y(d[1]) + ")";
  	},
 
- 	zoomTransform: function(){
- 		
- 		// var thres = this.textShowThres;
- 		// if(d3.event.scale>=thres&&this.currentScale<thres){
- 		// 	this.texts.attr('display','default');
- 		// 	this.currentScale = d3.event.scale;
- 		// };
-
- 		// if(d3.event.scale<=thres&&this.currentScale>thres){
- 		// 	this.texts.attr('display','none');
- 		// 	this.currentScale = d3.event.scale;
- 		// };
-
- 		this.zoomables.attr("transform",this.circleTransform);
- 	},
-
  	highlightSearchTerm:function(event){
- 		// console.log(event.term);
  		d3.selectAll('g').filter(function(d){ return d[3]==event.term;})
  						.call(function(selection){
  							var D = selection.datum();
@@ -285,7 +267,6 @@ var DotsView = Backbone.View.extend({
  											
  						});
  											
- 		this.zoomables = d3.selectAll('[name=zoomable]');
  	},
 
 });
@@ -330,10 +311,6 @@ var DotsViewGeometryZoom = DotsView.extend({
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
 
-
- 		// display the text regardless of the scale
- 		// this.texts.attr('display', 'default');
-
  		var self = this;
  		$("#zoom_in").on('click', function(){
  			zoomByFactor(self, 1.2)
@@ -351,24 +328,32 @@ var DotsViewGeometryZoom = DotsView.extend({
  			self.dots.preloadNodeInfo(window.currentDot)
  		});
 
+ 		// decide wheather to show text based on the trueScale of the outer g
+ 		this.showText();
+
+ 	},
+
+ 	showText: function(){
+ 		this.trueScale = d3.transform(this.svg.attr('transform')).scale[0];
+ 		if(this.trueScale>this.textShowThres){
+ 			d3.selectAll('.display-none').attr('display', 'default');
+ 		} else {
+ 			d3.selectAll('.display-none').attr('display', 'none');	
+ 		};
  	},
 
  	zoomTransform: function(){
  		
  		var thres = this.textShowThres;
- 		// this.currentScale = d3.event.scale;
+
+ 		this.showText();
+
  		if(d3.event.scale>=thres&&this.currentScale<thres){
- 		// if(d3.event.scale>=thres){	
- 			// this.texts.attr('display','default');
- 			d3.selectAll('.display-none').attr('display', 'default');
  			this.currentScale = d3.event.scale;
  			d3.select("#zoom_out").attr('disabled', null);
  		};
 
  		if(d3.event.scale<=thres&&this.currentScale>thres){
- 		// if(d3.event.scale<=thres){	
- 			// this.texts.attr('display','none');
- 			d3.selectAll('.display-none').attr('display', 'none');
  			this.currentScale = d3.event.scale;
  			d3.select("#zoom_out").attr('disabled', true);
  		};
@@ -378,7 +363,6 @@ var DotsViewGeometryZoom = DotsView.extend({
 
 		var maxx = d3.max(this.x.range());
 		var maxy = d3.max(this.y.range());
-
 
 		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
 		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
