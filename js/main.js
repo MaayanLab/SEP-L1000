@@ -452,7 +452,6 @@ var DotsViewGeometryZoom = DotsView.extend({
  						.attr('r', size)
  						.attr('class', 'highlight');
  				});
- 		console.log(highlighted);		
  		return highlighted;
  	},
 
