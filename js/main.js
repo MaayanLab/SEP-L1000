@@ -101,7 +101,7 @@ var DotView = Backbone.View.extend({
 
 	render: function(){
 		var g = d3.select(this.el).datum([this.model.get('x'), 
-		this.model.get('y'),this.model.get('size'),this.model.get('label'), this.model.get('id')])
+		this.model.get('y'),this.model.get('size'),this.model.get('label'), this.model.get('id'), this.model.get('color')])
 						  .attr('transform',function(d){ return 'translate(' +
 						  	d[0] + "," + d[1] + ")";});
 		
@@ -136,6 +136,13 @@ var DotView = Backbone.View.extend({
 			var proba = $("#probaCutoff").val();
 			self.model.set({"filter": filter, "probability": proba});
 			self.model.getInfo();
+			// highlight the corresponding category
+			d3.selectAll('#colorLegend a').filter(function(d){
+				d3.select(this).attr('class', '')
+				return d[1] === self.model.get('color');
+			}).each(function(d){
+				d3.select(this).attr('class', 'highlight-legend')
+			});
 		});
 
 		return this;
@@ -427,6 +434,32 @@ var DotsViewGeometryZoom = DotsView.extend({
  		self.trigger('highlighted',event);
  	},
 
+ 	highlightCategory: function(color){
+ 		// highlight dots of a certain category
+ 		var self = this;
+ 		highlighted = []; // to collect the data of highlighted side effects
+ 		this.svg.selectAll('g')
+ 				.filter(function(d){ 
+ 					return d[5] === color; 
+ 				})
+ 				.each(function(d) {
+ 					highlighted.push(d);
+ 					var D = d;
+ 					var size = D[2];
+ 					var highlight = self.svg.append('circle')
+ 						.datum([D[0], D[1]])
+ 						.attr('transform', 'translate(' + D[0] + ',' + D[1] + ')')
+ 						.attr('r', size)
+ 						.attr('class', 'highlight');
+ 				});
+ 		console.log(highlighted);		
+ 		return highlighted;
+ 	},
+
+ 	removeHighlighted: function(){
+ 		var self = this;
+ 		this.svg.selectAll('.highlight').remove();
+ 	},
 
 });
 
@@ -555,22 +588,36 @@ appPathway.listenTo(searchView,"searchTermSelected",appPathway.centerDot);
 // 		textShowThres:18,sizeScale:0.1,scaleExponent:1});
 
 
-// display legend
+// display legend, click legend to highlight side effects of the category
 $.getJSON('get_legend.php', {type: appPathway.dbTable}, function(json) {
 
 	for (var i = json.length - 1; i >= 0; i--) {
 		var name = json[i].name;
 		var color = "#" + json[i].color;
-		d3.select("#colorLegend").append('span').style('background-color', color).style('color', 'white').text(name)
-		d3.select("#colorLegend").append('span').text(', ')
+
+		var a = d3.select("#colorLegend").append('a')
+			.datum([name, color])
+			.attr('href' , '#')
+			.attr('data-toggle', 'tooltip')
+			.attr('data-placement', 'top')
+			.attr('title', 'click to highlight side effects')
+			.style('background-color', color).style('color', 'white').text(name);
+
+		a.on('click', function(d) {
+			appPathway.removeHighlighted();
+			appPathway.highlightCategory(d[1]);
+		});
+
+		d3.select("#colorLegend").append('span').text(', ');
 	};
 
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 
 
 //trivial initializations
-downloadLink("#svgDownload","svg");
+// downloadLink("#svgDownload","svg");
 
 //trivial non-modulized functions
 function buttonClick(){

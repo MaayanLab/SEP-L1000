@@ -39,10 +39,15 @@ text {
 
 .highlight {
   fill: none;
-  stroke: #49b0c9;
+  stroke: black;
   stroke-width: 2;
   /*stroke-opacity:0.5;*/
   pointer-events: none; }
+
+.highlight-legend {
+  border-style: solid;
+  border-color: black;
+}
 
 #searchBox {
   /*width: 600px;*/
@@ -51,11 +56,13 @@ text {
   /*border-color: #656468;*/
   /*border-color: azure;*/
   /*border-width: 1px;*/
-  padding-top: 2px;
+  padding-top: 4px;
   text-align: center;
-  padding-bottom: 2px;
-  /*border-style: solid;*/
-  margin-bottom: 0.5px; }
+  padding-bottom: 4px;
+  border-style: solid;
+  margin-bottom: 2px; 
+  margin-top: 2px;
+}
 
 .custom-autocomplete-ul {
   /*background-color: rgba(0, 0, 0, 0.5);*/
