@@ -12,7 +12,17 @@
 
 
   <div id="sidebar-wrapper" class="panel panel-info">
-    <div class="panel-heading">Side effect information</div>
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-xs-12">
+          <span class="pull-left">Side effect information</span>
+          <a id="minimize-sidebar" href="#" class="pull-right" title="click to toggle this panel" data-toggle="tooltip" data-placement="right">
+            <span id="minimize-icon" class="glyphicon glyphicon-minus"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div class="panel-body">
 
     <div class="well">
@@ -88,6 +98,16 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 
   $("#sidebar-wrapper").draggable();
+
+  $("#minimize-sidebar").click(function(event) {
+    $(".panel-body").slideToggle(500, function() {
+      $("#minimize-icon").toggleClass('glyphicon-minus');
+      $("#minimize-icon").toggleClass('glyphicon-plus');
+
+      console.log('hello')
+    });
+    
+  });
 
   $.getJSON('get_stats.php', function(json, textStatus) {
     $("#drug_count").text(json['drugs']);
