@@ -116,7 +116,7 @@ var DotView = Backbone.View.extend({
 
 		var texts = g.append('svg:text').attr('fill','black')
 			.attr('text-anchor','middle')
-			.style('font-size',function(d){ return d[2]/2; })
+			.style('font-size',function(d){ return d[2]/2.5 + 'px'; })
 			.attr('class',function(d){ return d[2] > 25 ? 'display-default' : 'display-none'}); // whether to display text at first view
 
 		texts.each(function(d) {
@@ -660,7 +660,7 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	d3.select(nodeInfoSelector + ' span').remove();
 	d3.select(nodeInfoSelector)
 		.append("div")
-		.style("height", '1000px')
+		.style("height", '800px')
 		.style("overflow", "auto")
 	var div = d3.select(nodeInfoSelector + ' div'); // the container to put node info
 	div.append("span")

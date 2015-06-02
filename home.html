@@ -2,7 +2,9 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
-      <div id="colorLegend"></div>
+      <div id="colorLegend" class="well well-sm">
+        <h5>System Organ Classes of side effects:</h5>
+      </div>
       <div class="btn-group-xs" role="group">
         <button id="zoom_in" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-zoom-in"></span> </button>
         <button id="zoom_out" type="button" class="btn btn-default" disabled> <span class="glyphicon glyphicon-zoom-out"></span> </button>
@@ -25,7 +27,7 @@
 
           <div class="panel-body">
 
-            <div class="well">
+            <div class="well well-sm">
               <form class="form-horizontal">
                 <div class="form-group">
                   <label for="probaCutoff" class="col-sm-8 control-label"><p class="text-left">Probability cutoff: <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" title="Cutoff for thresholding the drugs that are predicted to cause the side effect based on the probability produced by the predictive model."></span> </p></label>
