@@ -595,10 +595,10 @@ $.getJSON('get_legend.php', {type: appPathway.dbTable}, function(json) {
 		var name = json[i].name;
 		var color = "#" + json[i].color;
 
-		var a = d3.select("#colorLegend").append('a')
+		var a = d3.select("#colorLegend").append('span').append('a')
 			.datum([name, color])
 			.attr('href' , '#')
-			.style('background-color', color).style('color', 'white').text(name);
+			.style('background-color', color).style('color', 'black').text(name);
 
 		a.on('click', function(d) {
 			appPathway.removeHighlighted();
