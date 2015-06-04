@@ -22,7 +22,7 @@ var Dot = Backbone.Model.extend({
 	// send a GET request to the API to get infomation about the Dot
 	getInfo: function(){
 		var self = this;
-		$.getJSON('get_se_drug.php', {umls_id: this.id, probability: this.get('probability'), filter: this.get('filter')}, function(json) {
+		$.getJSON('get_se_drug_top.php', {umls_id: this.id, topn: 100}, function(json) {
 			displayNodeInfo("#nodeInfo", self, json)
 		});
 	}
@@ -76,9 +76,9 @@ var Dots = Backbone.Collection.extend({
 	// to preload note info
 	preloadNodeInfo: function(id) {
 		var model = this.get(id);
-		var filter = +!$("#nodeInfoCheckbox").is(":checked");
-		var proba = $("#probaCutoff").val();
-		model.set({"filter": filter, "probability": proba});
+		// var filter = +!$("#nodeInfoCheckbox").is(":checked");
+		// var proba = $("#probaCutoff").val();
+		// model.set({"filter": filter, "probability": proba});
 		model.getInfo();
 		window.currentDot = id; // the global variable to store the current Dot id
 	},
