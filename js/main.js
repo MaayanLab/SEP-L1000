@@ -315,6 +315,7 @@ var DotsViewGeometryZoom = DotsView.extend({
 
 
  		this.currentScale = 1;	
+ 		this.zoomTranslate = [0,0];
  		this.addAll();
  		this.texts = this.svg.selectAll('text');
 
