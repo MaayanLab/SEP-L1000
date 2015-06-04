@@ -597,9 +597,6 @@ $.getJSON('get_legend.php', {type: appPathway.dbTable}, function(json) {
 		var a = d3.select("#colorLegend").append('a')
 			.datum([name, color])
 			.attr('href' , '#')
-			.attr('data-toggle', 'tooltip')
-			.attr('data-placement', 'top')
-			.attr('title', 'click to highlight side effects')
 			.style('background-color', color).style('color', 'white').text(name);
 
 		a.on('click', function(d) {
@@ -655,7 +652,16 @@ function downloadLink(linkID,svgID){
 		
 
 displayNodeInfo = function(nodeInfoSelector, model, info) { 
-	// var findSelector = this.findSelector
+	// control the open and close the the panel-body
+	var panelBodyDisplay = $(".panel-body").css('display');
+	if (panelBodyDisplay === 'none') { // panel closed 
+		$(".panel-body").slideToggle(200);	
+	} else{ // panel opened
+		$(".panel-body").slideToggle(200, function(){
+			$(this).slideToggle(200);
+		});		
+	};
+
 	d3.select(nodeInfoSelector + ' div').remove();
 	d3.select(nodeInfoSelector + ' span').remove();
 	d3.select(nodeInfoSelector)
