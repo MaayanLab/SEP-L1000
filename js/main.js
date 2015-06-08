@@ -122,6 +122,9 @@ var DotView = Backbone.View.extend({
 		texts.each(function(d) {
 			var el = d3.select(this);
 			var words = d[3].split(' ');
+			if (words.length === 4) {
+				words = [words[0]+' '+words[1], words[2]+' '+words[3]]
+			}
 		    for (var i = 0; i < words.length; i++) {
 		        var tspan = el.append('tspan').text(words[i]);
 		        if (i > 0)
@@ -369,11 +372,11 @@ var DotsViewGeometryZoom = DotsView.extend({
 		var t = this.zoom.translate();
 		this.zoomTranslate = this.zoom.translate();
 
-		var maxx = d3.max(this.x.range());
-		var maxy = d3.max(this.y.range());
+		var maxx = d3.max(this.x.range()) + 300;
+		var maxy = d3.max(this.y.range()) + 300;
 
-		tx = Math.max( Math.min(0, t[0]), this.stageWidth - maxx * this.zoom.scale() );
-		ty = Math.max( Math.min(0, t[1]), this.stageWidth - maxy * this.zoom.scale() );
+		var tx = Math.max( Math.min(300, t[0]), this.stageWidth - maxx * this.zoom.scale() );
+		var ty = Math.max( Math.min(300, t[1]), this.stageWidth - maxy * this.zoom.scale() );
 
  		this.svg.attr("transform","translate(" + tx + "," + ty
  			+ ")scale(" + d3.event.scale + ")");
