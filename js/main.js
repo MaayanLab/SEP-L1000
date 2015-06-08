@@ -677,12 +677,9 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.attr('href', '#se/'+model.get('id'))
 		.attr('target', '_blank');
 	div.append('br');
-	div.append('span')
-		.text('UMLS ID: ')
-		.append('a')
-		.text(model.get('id'))
-		.attr('href', '#se/'+model.get('id'))
-		.attr('target', '_blank');
+	div.append("span")
+		.text("* drug already known to cause side effect");
+
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped table-condensed')
 	var th = table.append('thead').append('tr');
@@ -732,6 +729,11 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 	var fmt = d3.format(".2f")
 	trs.append('td')
 		.text(function(d){return fmt(d.p_val)} ) // pval
+
+	div.append("span").append("a")
+		.text("See more")
+		.attr("href", '#se/'+model.get('id'))
+		.attr('target', '_blank');
 };
 
 zoomByFactor = function(dotsView, factor) { // for zooming svg after button click

@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="col-md-10">
-        <div class="panel panel-primary" id="drug_side_effects">
+        <div class="panel panel-default" id="drug_side_effects">
           <div class="panel-heading"></div>
           <div class="panel-body"><div class="row text-center"><img src="img/ajax-loader.gif"></div></div>
         </div>
@@ -26,15 +26,13 @@
       var pert_id = document.location.hash.split('/').slice(-1)[0];
       $("#cpd_img").attr("src", "img/cpd-images/" +pert_id+".png")
 
-      $(".panel-heading").html('Predicted side effects for ' + pert_id);
-
       $(document).ready(function(){
   $.getJSON('get_drug_se.php', {'pert_id' : pert_id}, function(json){ // load predicted SEs for the drug
     var table = $('<table class="table table-hover table-striped" id="table_se"><thead><tr><th>Name</th><th>UMLS Concept ID</th><th>probability</th><th>already labeled?</th></tr></thead></table>')
     var tbody = objs2TableRows(json, 'umls_id', '#se/');
 
     table.append(tbody);
-    $(".panel-primary .panel-body").html(table);
+    $("#drug_side_effects .panel-body").html(table);
 
   }).then(function(){
     $("#table_se").dataTable({
@@ -52,9 +50,12 @@
       var panelHead = $('<div class="panel-heading">');
       panelHead.append('<span class="glyphicon glyphicon-info-sign"></span>');
       var panelBody = $('<div class="panel-body">');
-
+      
+      var pert_iname = obj['pert_iname'];
+      $(".panel-heading").html('Predicted side effects for <a href="#drug/' + pert_id + '">' + pert_iname +'</a>');
+      
       if (key === 'drugs_lincs') {
-        div.addClass('panel-success');
+        div.addClass('panel-default');
         var lincsUrl = 'http://apps.lincscloud.org/sandbox/pert_info#' + obj['pert_iname'];
         panelHead.wrapInner('<a target="_blank" href="' + lincsUrl + '">Information from lincscloud</a>');
       };
@@ -79,7 +80,20 @@
   $('#pubchem_cid td').eq(1).wrapInner(function(){
     return '<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/'+$(this).text()+'"></a>'
   });
-  
+  $('#structure_url td').eq(1).wrapInner(function(){
+    if($(this).text() !== 'null'){
+      return '<a target="_blank" href="'+$(this).text()+'"></a>'  
+    }
+  });
+  $('#pert_url td').eq(1).html(function(){
+    var text = $(this).text()
+    if(text !== 'null'){
+      if(text.indexOf(',') > -1) {
+        text = text.split(',')[0];
+      }
+     return '<a target="_blank" href="'+text+'">'+ text +'</a>'
+    }
+  });  
 
 })
 

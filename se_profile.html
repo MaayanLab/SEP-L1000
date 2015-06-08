@@ -11,10 +11,10 @@
           </div>
         </div>
         <div class="col-md-10">
-          <div class="panel panel-info" id="se_info">
+          <div class="panel panel-default" id="se_info">
             <div class="panel-heading"></div>
           </div>
-          <div class="panel panel-primary" id="se_drugs">
+          <div class="panel panel-default" id="se_drugs">
             <div class="panel-heading">Predicted drugs associated with this side effect</div>
             <div class="panel-body"><div class="row text-center"><img src="img/ajax-loader.gif"></div></div>
           </div>
@@ -30,14 +30,14 @@
             $.getJSON('se_profile.php', {umls_id: umls_id}, function(json){
               var div = $('<div class="panel-body"></div>');
               dl = $('<dl class="dl-horizontal"></dl>');
-              $(".panel-info .panel-heading").html('<span class="glyphicon glyphicon-info-sign"></span> '+json['name']);
+              $("#se_info .panel-heading").html('<span class="glyphicon glyphicon-info-sign"></span> '+json['name']);
               dl.append('<dt>Name:</dt><dd>'+json['name'] + '</dd>' );
               dl.append('<dt>Synonyms:</dt><dd>'+json['synonyms'] + '</dd>' );
               dl.append('<dt>Link to SIDER:</dt><dd>'+siderUrlAnchor + '</dd>' );
               dl.append('<dt>System Organ Class:</dt><dd>'+json['soc'] + '</dd>' );
               dl.append('<dt>Predictability:</dt><dd>AUROC = ' + json['auroc'] + '</dd>' );
               div.append(dl)
-              $('.panel-info').append(div);
+              $('#se_info').append(div);
             });
 
             $.ajax({
@@ -55,7 +55,7 @@
               dataType: 'json',
               success: function(json){
                 var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>already labeled?</th></tr></thead></table>');
-                $(".panel-primary .panel-body").html(table);
+                $("#se_drugs .panel-body").html(table);
                 var tbody = objs2TableRowsWithStatus(json, 'pert_id', '#drug/', '.progress-bar');
                 table.append(tbody);
               },
