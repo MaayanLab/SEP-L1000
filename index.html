@@ -42,7 +42,6 @@
                 </li>
                 <li id="methods"><a href="#methods">Method</a></li>
                 <li id="links"><a href="#links">Links</a></li>
-                <li id="contact"><a href="#contact">Contact us</a></li>
               </ul>
               <form class="navbar-form navbar-right" role="search" action="#search/">
                 <div class="form-group">              
@@ -61,6 +60,43 @@
         </div>
         <div id="page-content"></div>
 
+        <div id="footer">
+          <div class="container">
+            <div class="row">
+
+              <div class="col-sm-6">
+                <h4>Affiliations</h4>
+                <p>
+                  <a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a>
+                  <a href="http://bd2k.nih.gov/" target="_blank">
+                    <img src="img/nih-bd2k-bw.png">
+                  </a>
+                  <a href="http://www.lincs-dcic.org/" target="_blank">
+                    <img src="img/dcic-logo.png">
+                  </a>
+                  <a href="http://icahn.mssm.edu/" target="_blank">
+                    <img src="img/MSSMLogo.png">
+                  </a>
+                </p>
+              </div>
+
+              <div class="col-sm-4">
+                <h4>Contact us</h4>
+                <p>Please contact Avi Ma’ayan and Zichen Wang for comments, suggestions, and support:</p>
+                <p><a href="mailto:zichen.wang@mssm.edu">avi.maayan@mssm.edu</a></p>
+                <p><a href="mailto:zichen.wang@mssm.edu">zichen.wang@mssm.edu</a></p>
+              </div>
+              <div class="col-sm-2">
+                <h4>Share</h4>
+                <div class="addthis_sharing_toolbox"></div>
+              </div>  
+
+            </div>
+
+          </div>
+
+        </div>
+
         <script src="js/jquery-1.11.1.min.js"></script>
         <script src="js/jquery-ui.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.1/js/jquery.dataTables.js"></script>
@@ -76,18 +112,18 @@
         <script src="js/backbone-min.js" ></script>
         <script src="js/router.js"></script>
         <script>
-          $(document).ready(function() {
-            $.getScript('js/ga.js');
-            searchAutocomplete("[name=search]");
-            $("[title=search]").on('click', function(event) {
-              var searchStr = $("[name=search]").val();
-              $(this).attr('href', function(){
-                return "#search/" + searchStr;
-              });
+        $(document).ready(function() {
+          $.getScript('js/ga.js');
+          searchAutocomplete("[name=search]");
+          $("[title=search]").on('click', function(event) {
+            var searchStr = $("[name=search]").val();
+            $(this).attr('href', function(){
+              return "#search/" + searchStr;
             });
           });
+        });
         </script>
-        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52026ded4b51162b" async="async"></script>
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5575a75363e11adb" async="async"></script>
 
-</body>
-</html>
+      </body>
+      </html>

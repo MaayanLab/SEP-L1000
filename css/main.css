@@ -136,3 +136,30 @@ a {
   left: 187.5;
   width: 50;
   display: none; }
+
+#footer {
+  background: #222222;
+  border-top: 1px solid #222222;
+  height: 200px;
+  margin-top: 20px;
+  padding: 20px 0 30px 0;
+}
+#footer h4 {
+  color: #fff;
+}
+
+#footer a,
+#footer p {
+  color: #ddd;
+}
+#footer a:hover {
+  color: #008cba;
+  text-decoration: none;
+}
+#footer p {
+  line-height: 90%;
+}
+#footer img {
+  height: 30px;
+  margin: 0 5px;
+}

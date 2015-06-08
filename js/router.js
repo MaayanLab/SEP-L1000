@@ -14,7 +14,6 @@ var Router = Backbone.Router.extend({
 		'browseSEs': 'browseSEs',
 		'methods': 'methods',
 		'links': 'links',
-		'contact': 'contact',
 		'drug/:id': 'drug',
 		'se/:id': 'se',
 		'search/:searchStr': 'search'
@@ -52,13 +51,6 @@ var Router = Backbone.Router.extend({
 		$(this.el).load("links.html", function() {
 			removeActive();
 			$("#links").addClass('active');
-		});
-	},
-
-	contact: function(){
-		$(this.el).load("contact.html", function() {
-			removeActive();
-			$("#contact").addClass('active');
 		});
 	},
 
