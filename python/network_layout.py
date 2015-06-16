@@ -192,8 +192,8 @@ def make_directed_json_graph_soc(gmt_fn, d_id_name, d_id_category, d_category_co
 PREDICTION_DF = HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF1000_proba_df_n20338x1053.txt'
 
 ## for side effects
-GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only.gmt'
-# GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF100_GOtCS_AUC_0.7_proba_0.75.gmt' 
+# GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only.gmt'
+GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF100_GOtCS_AUC_0.7_proba_0.75.gmt' 
 GML_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effect_network.gml'
 ## for drugs
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only_flipped.gmt'
@@ -240,7 +240,7 @@ d_soc_color = dict(zip(set(d_umls_soc.values()), COLORS40))
 # make directed graph for predicted SEs
 # make_directed_json_graph(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
 # 	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_with_known.json')
-make_directed_json_graph(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
-	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_soc.json')
+make_directed_json_graph_soc(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
+	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_soc_with_known.json')
 
 
