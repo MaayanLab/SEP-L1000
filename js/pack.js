@@ -45,7 +45,7 @@ var Dots = Backbone.Collection.extend({
 		var bubble = d3.layout.pack()
 			.sort(null)
 			.size([this.stageWidth, this.stageWidth])
-			.padding(1.5);
+			.padding(0.5);
 		return bubble.nodes(classes(response))
 	},
 
@@ -107,8 +107,8 @@ var DiGraphView = Backbone.View.extend({
 		stageWidth: 600,
 		paddingWidth: 10,
 		sizeScale: 0.4, // control the size of node.
-		textShowThres: 2,
-		maxScale: 8,
+		textShowThres: 1.5,
+		maxScale: 20,
 		scaleExponent: 1,
 		zoomTranslate: [],
 		dbTables: [],
@@ -140,6 +140,7 @@ var DiGraphView = Backbone.View.extend({
 
 	render: function(){ // called after the view init
 		// console.log(this.dots.get('C0029445').get('label'))
+		this.stageWidth = $(this.el).parent().width();
 		d3.select('g').remove();
 
  		// this.stageHeight = this.dots.transformRange(this.stageWidth,
@@ -204,13 +205,30 @@ var DiGraphView = Backbone.View.extend({
 		  .attr("r", function(d) { return d.get('r'); })
 		  .style("fill", function(d) { return d.get('color'); });
 
-		this.node.append("text")
-		  .text(function(d) { return d.get('label'); })
+		this.texts = this.node.append("text")
+		  // .text(function(d) { return d.get('label'); })
 		  .attr("dy", ".3em")
 		  .style("text-anchor", "middle")
-		  .style("font-size", function(d) { return Math.min(2 * d.get('r'), (2 * d.get('r') - 8) / this.getComputedTextLength() * 12) + "px"; })
+		  .style('font-size',function(d){ return d.get('r')/3.5 + 'px'; })
+		  // .style("font-size", function(d) { return Math.min(2 * d.get('r'), (2 * d.get('r') - 8) / this.getComputedTextLength() * 4) + "px"; })
 		  .attr('class',function(d){ return d.get('value') > 6 ? 'display-default' : 'display-none'}) // whether to display text at first view
-		  .attr("dy", ".35em");
+		  // .attr("dy", ".35em");
+
+
+		this.texts.each(function(d) {
+			var el = d3.select(this);
+			var words = d.get('label').split(' ');
+			if (words.length === 4) {
+				words = [words[0]+' '+words[1], words[2]+' '+words[3]]
+			}
+		    for (var i = 0; i < words.length; i++) {
+		        var tspan = el.append('tspan').text(words[i]);
+		        if (i > 0)
+		            tspan.attr('x', 0).attr('dy', '1.2em')
+		        ;
+		    };
+		});
+
 
 		this.dots.preloadNodeInfo("C0029445"); 
 
@@ -276,14 +294,15 @@ var DiGraphView = Backbone.View.extend({
 		var t = this.zoom.translate();
 		this.zoomTranslate = this.zoom.translate();
 
-		// var maxx = d3.max(this.x.range()) + 300;
-		// var maxy = d3.max(this.y.range()) + 300;
+		var maxx = d3.max(this.x.range()) + 300;
+		var maxy = d3.max(this.y.range()) + 300;
 
-		// var tx = Math.max( Math.min(300, t[0]), this.stageWidth - maxx * this.zoom.scale() );
-		// var ty = Math.max( Math.min(300, t[1]), this.stageWidth - maxy * this.zoom.scale() );
+		var tx = Math.max( Math.min(300, t[0]), this.stageWidth - maxx * this.zoom.scale() );
+		var ty = Math.max( Math.min(300, t[1]), this.stageWidth - maxy * this.zoom.scale() );
 
-		var tx = this.zoomTranslate[0];
-		var ty = this.zoomTranslate[1];
+		// no limit for panning
+		// var tx = this.zoomTranslate[0];
+		// var ty = this.zoomTranslate[1];
 
 		this.svg.attr("transform","translate(" + tx + "," + ty
 			+ ")scale(" + d3.event.scale + ")"); 		
@@ -314,7 +333,7 @@ var DiGraphView = Backbone.View.extend({
 				.transition().duration(250).delay(250)
 				.attr('transform', function(){
         	    	var tx = self.stageWidth/2 - D[0]
-        	    	var ty = self.stageWidth/2 - D[1]
+        	    	var ty = (self.stageWidth/2 - D[1])/2
         	    	self.zoomTranslate = [tx, ty]
 					return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
 				})
