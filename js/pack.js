@@ -140,6 +140,7 @@ var DiGraphView = Backbone.View.extend({
 
 	render: function(){ // called after the view init
 		// console.log(this.dots.get('C0029445').get('label'))
+		// console.log(this.node)
 		this.stageWidth = $(this.el).parent().width();
 		d3.select('g').remove();
 
@@ -172,6 +173,7 @@ var DiGraphView = Backbone.View.extend({
  						.append('g');
 
  		var self = this;
+
 		this.node = this.svg.selectAll(".node")
 		  .data(this.dots.filter(function(d){
 		  	return d.get('label') !== undefined;
@@ -196,7 +198,8 @@ var DiGraphView = Backbone.View.extend({
 		this.node
 			.transition().duration(1000)
 		  .attr("transform", function(d) { 
-		    return "translate(" + d.get('x') + "," + d.get('y') + ")"; })
+		    return "translate(" + d.get('x') + "," + d.get('y') + ")"; }) 			
+
 
 		this.node.append("title")
 		  .text(function(d) { return d.get('label'); });
@@ -333,7 +336,7 @@ var DiGraphView = Backbone.View.extend({
 				.transition().duration(250).delay(250)
 				.attr('transform', function(){
         	    	var tx = self.stageWidth/2 - D[0]
-        	    	var ty = (self.stageWidth/2 - D[1])/2
+        	    	var ty = (self.stageWidth/2 - D[1]) * 0.7
         	    	self.zoomTranslate = [tx, ty]
 					return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
 				})
@@ -622,7 +625,7 @@ $.getJSON('get_legend.php', {type: 'side_effect_network.json'}, function(json) {
 		var name = json[i].name;
 		var color = "#" + json[i].color;
 
-		var a = d3.select("#colorLegend").append('span').append('a')
+		var a = d3.select("#colorLegend").append('small').append('a')
 			.datum([name, color])
 			.attr('href', '#')
 			.style('background-color', color).style('color', 'black').text(name);
@@ -632,7 +635,7 @@ $.getJSON('get_legend.php', {type: 'side_effect_network.json'}, function(json) {
 			graphView.highlightCategory(d[1]);
 		});
 
-		d3.select("#colorLegend").append('span').text(' | ');
+		d3.select("#colorLegend").append('small').text(' | ');
 	};
 
 });
