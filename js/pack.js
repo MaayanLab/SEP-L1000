@@ -140,98 +140,93 @@ var DiGraphView = Backbone.View.extend({
 
 	render: function(){ // called after the view init
 		// console.log(this.dots.get('C0029445').get('label'))
-		// console.log(this.node)
+
 		this.stageWidth = $(this.el).parent().width();
-		d3.select('g').remove();
 
- 		// this.stageHeight = this.dots.transformRange(this.stageWidth,
- 		// 	this.paddingWidth, this.sizeScale);
 		this.stageHeight = this.stageWidth;
-	
- 		this.zoomTransform = _.bind(this.zoomTransform,this);
- 		this.currentScale = 1;
- 		this.zoomTranslate = [0,0];
-
-		this.x = d3.scale.pow().exponent(this.scaleExponent)
-								.domain([0,this.stageWidth])
- 								.range([0,this.stageWidth]);
-
- 		this.y = d3.scale.pow().exponent(this.scaleExponent)
- 								.domain([0,this.stageHeight])
- 								.range([0,this.stageHeight]);
-
- 		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale])
- 						.x(this.x)
- 						.y(this.y)
- 						.on("zoom", this.zoomTransform);
-
- 		this.svg = d3.select(this.el)
- 						.attr('width',this.stageWidth)
- 						.attr('height',this.stageWidth)
- 						.attr('class','svgBorder')
-						.call(this.zoom)
- 						.append('g');
 
  		var self = this;
 
-		this.node = this.svg.selectAll(".node")
-		  .data(this.dots.filter(function(d){
-		  	return d.get('label') !== undefined;
-		  }))
-		.enter().append("g")
-		  .attr("class", "node")
-		  // .attr("transform", function(d) { 
-		  //   return "translate(" + d.get('x') + "," + d.get('y') + ")"; })
-		  .on('click', function(d){
-		  	var modelId = d.get('id');
-		  	self.dots.preloadNodeInfo(modelId);
+ 		if (this.svg === undefined) { // first time collection is fetched
+	 		this.zoomTransform = _.bind(this.zoomTransform,this);
+	 		this.currentScale = 1;
+	 		this.zoomTranslate = [0,0];
 
-			// highlight the corresponding category
-			d3.selectAll('#colorLegend a').filter(function(D){
-				d3.select(this).attr('class', '')
-				return D[1] === d.get('color');
-			}).each(function(D){
-				d3.select(this).attr('class', 'highlight-legend')
-			});		  	
-		  });
+			this.x = d3.scale.pow().exponent(this.scaleExponent)
+									.domain([0,this.stageWidth])
+	 								.range([0,this.stageWidth]);
 
+	 		this.y = d3.scale.pow().exponent(this.scaleExponent)
+	 								.domain([0,this.stageHeight])
+	 								.range([0,this.stageHeight]);
+
+	 		this.zoom = d3.behavior.zoom().scaleExtent([1, this.maxScale])
+	 						.x(this.x)
+	 						.y(this.y)
+	 						.on("zoom", this.zoomTransform);
+
+	 		this.svg = d3.select(this.el)
+	 						.attr('width',this.stageWidth)
+	 						.attr('height',this.stageWidth)
+	 						.attr('class','svgBorder')
+							.call(this.zoom)
+	 						.append('g');
+
+			this.node = this.svg.selectAll(".node")
+			  .data(this.dots.filter(function(d){
+			  	return d.get('label') !== undefined;
+			  }))
+			.enter().append("g")
+			  .attr("class", "node")
+			  .on('click', function(d){
+			  	var modelId = d.get('id');
+			  	self.dots.preloadNodeInfo(modelId);
+
+				// highlight the corresponding category
+				d3.selectAll('#colorLegend a').filter(function(D){
+					d3.select(this).attr('class', '')
+					return D[1] === d.get('color');
+				}).each(function(D){
+					d3.select(this).attr('class', 'highlight-legend')
+				});
+			  });
+
+			this.node.append("title")
+			  .text(function(d) { return d.get('label'); });
+
+			this.node.append("circle")
+			  .attr("r", function(d) { return d.get('r'); })
+			  .style("fill", function(d) { return d.get('color'); });
+
+			this.texts = this.node.append("text")
+			  // .text(function(d) { return d.get('label'); })
+			  .attr("dy", ".3em")
+			  .style("text-anchor", "middle")
+			  .style('font-size',function(d){ return d.get('r')/3.5 + 'px'; })
+			  // .style("font-size", function(d) { return Math.min(2 * d.get('r'), (2 * d.get('r') - 8) / this.getComputedTextLength() * 4) + "px"; })
+			  .attr('class',function(d){ return d.get('value') > 6 ? 'display-default' : 'display-none'}) // whether to display text at first view
+			  // .attr("dy", ".35em");
+
+			this.texts.each(function(d) {
+				var el = d3.select(this);
+				var words = d.get('label').split(' ');
+				if (words.length === 4) {
+					words = [words[0]+' '+words[1], words[2]+' '+words[3]]
+				}
+			    for (var i = 0; i < words.length; i++) {
+			        var tspan = el.append('tspan').text(words[i]);
+			        if (i > 0)
+			            tspan.attr('x', 0).attr('dy', '1.2em');
+			    };
+			});
+
+ 		};
+
+ 		
 		this.node
 			.transition().duration(1000)
 		  .attr("transform", function(d) { 
 		    return "translate(" + d.get('x') + "," + d.get('y') + ")"; }) 			
-
-
-		this.node.append("title")
-		  .text(function(d) { return d.get('label'); });
-
-		this.node.append("circle")
-		  .attr("r", function(d) { return d.get('r'); })
-		  .style("fill", function(d) { return d.get('color'); });
-
-		this.texts = this.node.append("text")
-		  // .text(function(d) { return d.get('label'); })
-		  .attr("dy", ".3em")
-		  .style("text-anchor", "middle")
-		  .style('font-size',function(d){ return d.get('r')/3.5 + 'px'; })
-		  // .style("font-size", function(d) { return Math.min(2 * d.get('r'), (2 * d.get('r') - 8) / this.getComputedTextLength() * 4) + "px"; })
-		  .attr('class',function(d){ return d.get('value') > 6 ? 'display-default' : 'display-none'}) // whether to display text at first view
-		  // .attr("dy", ".35em");
-
-
-		this.texts.each(function(d) {
-			var el = d3.select(this);
-			var words = d.get('label').split(' ');
-			if (words.length === 4) {
-				words = [words[0]+' '+words[1], words[2]+' '+words[3]]
-			}
-		    for (var i = 0; i < words.length; i++) {
-		        var tspan = el.append('tspan').text(words[i]);
-		        if (i > 0)
-		            tspan.attr('x', 0).attr('dy', '1.2em')
-		        ;
-		    };
-		});
-
 
 		this.dots.preloadNodeInfo("C0029445"); 
 
@@ -590,7 +585,7 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
 
-var graphView = new DiGraphView({dbTables:['side_effects_digraph_soc_with_known.json', 'side_effects_digraph.json'], stageWidth: 1000});
+var graphView = new DiGraphView({dbTables:['side_effects_digraph_soc_with_known.json', 'side_effects_digraph_with_known.json'], stageWidth: 1000});
 graphView.onStage();
 
 searchModel.listenTo(graphView.dots,'autoCompleteListGot',function(){
