@@ -23,8 +23,8 @@ function initTour() {
         nextButton: true,
         closeButton: true,
         target: $('#searchBox'),
-        my: 'bottom center',
-        at: 'top center'
+        my: 'top center',
+        at: 'bottom center'
     },
     {
     	content: [
@@ -67,7 +67,7 @@ function initTour() {
     var tour = new Tourist.Tour({
         steps: steps,
         tipClass: 'Bootstrap',
-        tipOptions:{ showEffect: 'slidein' }
+        tipOptions:{ showEffect: 'slidein' },
     });
     tour.start();
 }
@@ -75,5 +75,6 @@ function initTour() {
 $(document).ready(function() {
     $("#tour").click(function(){
         window.setTimeout(initTour, 500);
+        // $(".icon-remove").removeClass("icon icon-remove").addClass("glyphicon glyphicon-remove")
     })
 })
