@@ -37,7 +37,10 @@ function initTour() {
         closeButton: true,
         target: $('#sidebar-wrapper'),
         my: 'bottom center',
-        at: 'top center'
+        at: 'top center',
+        setup: function(){
+            $(".panel-body").slideDown(250);
+        }
     },
     {
     	content: [
@@ -48,12 +51,15 @@ function initTour() {
         closeButton: true,
         target: $('#nodeInfo'),
         my: 'bottom center',
-        at: 'top center'    	
+        at: 'top center',
+        setup: function(){
+            $(".panel-body").slideDown(250);
+        }        
     },
     {
     	content: [
-    		'<h5>Side effect visualization canvas</h5>',
-    		'<p>You can also explore side effects by zooming and panning in this canvas. And display the information of side effects by clicking them.</p>'
+    		'<h5>Side effect bubble chart</h5>',
+    		'<p>You can also explore side effects by zooming and panning in this bubble chart. And display the information of side effects by clicking them.</p>'
     	].join(''),
         highlightTarget: true,
         nextButton: true,
@@ -64,7 +70,7 @@ function initTour() {
     }
     ];
 
-    var tour = new Tourist.Tour({
+    tour = new Tourist.Tour({
         steps: steps,
         tipClass: 'Bootstrap',
         tipOptions:{ showEffect: 'slidein' },
