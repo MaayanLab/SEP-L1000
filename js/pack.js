@@ -116,8 +116,6 @@ var DiGraphView = Backbone.View.extend({
 
 
  	initialize: function(options){
- 		console.log("initializing view");
-
  		//initialize with defaults and passed arguments.
  		_.defaults(options,this.defaults);
  		_.defaults(this,options);
@@ -130,10 +128,7 @@ var DiGraphView = Backbone.View.extend({
  		this.activeTable = 0;
 
  		var self = this;
- 		this.listenTo(this.dots, 'sync', function(){
- 			console.log('synced')
- 			self.render()
- 		});
+ 		this.listenTo(this.dots, 'sync', this.render);
  		// call back
  		this.dots.fetch();
  	},
@@ -467,7 +462,7 @@ var SearchView = Backbone.View.extend({
 
 var BaseBtn = Backbone.View.extend({ // a base class for btn
 	defaults: {
-		el: "#changeData",
+		el: "#",
 		eventName: 'thisBtnClicked'
 	},
 
@@ -478,7 +473,7 @@ var BaseBtn = Backbone.View.extend({ // a base class for btn
 		var self = this;
 		$(this.el).on('click', function(){
 			self.trigger(self.eventName);
-		})
+		});
 	},
 
 	disable: function(){
@@ -489,6 +484,24 @@ var BaseBtn = Backbone.View.extend({ // a base class for btn
 		d3.select(this.el).attr('disabled', null);
 	}
 });
+
+var ChangeDataBtn = BaseBtn.extend({
+	defaults: {
+		text0: "Cluster by drug similarity",
+		text1: "Cluster by side effect category"
+	},
+
+	initialize: function(options){
+		BaseBtn.prototype.initialize.apply(this, [options])
+		$(this.el).text(this.text0);
+		var self = this;
+		$(this.el).click(function(){
+			$(this).text(function(i, v){
+				return v === self.text1 ? self.text0 : self.text1;
+            });
+		});
+	},
+})
 
 
 // Non-modular functions
@@ -595,7 +608,8 @@ searchModel.listenTo(graphView.dots,'autoCompleteListGot',function(){
 graphView.listenTo(searchView,"searchTermSelected",graphView.centerDot);
 
 // change the underlying network
-var changeDataBtn = new BaseBtn({el:"#changeData", eventName:"changeDataBtnClicked"});
+// var changeDataBtn = new BaseBtn({el:"#changeData", eventName:"changeDataBtnClicked"});
+var changeDataBtn = new ChangeDataBtn({el:"#changeData", eventName:"changeDataBtnClicked"});
 graphView.listenTo(changeDataBtn,'changeDataBtnClicked', graphView.rerender);
 
 // zooming buttons
