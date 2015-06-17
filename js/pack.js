@@ -201,13 +201,18 @@ var DiGraphView = Backbone.View.extend({
 			  .style("fill", function(d) { return d.get('color'); });
 
 			this.texts = this.node.append("text")
-			  // .text(function(d) { return d.get('label'); })
-			  .attr("dy", ".3em")
+			  .attr("dy", function(d){
+			  	var words = d.get('label').split(' ');
+			  	if (words.length === 3) {
+			  		return "-.3em";
+			  	} else{
+			  		return ".3em";
+			  	};
+			  })
 			  .style("text-anchor", "middle")
 			  .style('font-size',function(d){ return d.get('r')/3.5 + 'px'; })
 			  // .style("font-size", function(d) { return Math.min(2 * d.get('r'), (2 * d.get('r') - 8) / this.getComputedTextLength() * 4) + "px"; })
-			  .attr('class',function(d){ return d.get('value') > 6 ? 'display-default' : 'display-none'}) // whether to display text at first view
-			  // .attr("dy", ".35em");
+			  .attr('class',function(d){ return d.get('value') > 6 ? 'display-default' : 'display-none'}); // whether to display text at first view
 
 			this.texts.each(function(d) {
 				var el = d3.select(this);
@@ -567,7 +572,6 @@ updateNodeInfo = function(nodeInfoSelector, model, info){
 		};
 	});
 
-	$('[data-toggle="tooltip"]').tooltip();	
 };
 
 displayNodeInfo = function(nodeInfoSelector, model, info) { 
