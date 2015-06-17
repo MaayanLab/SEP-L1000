@@ -661,7 +661,9 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 var searchModel = new SearchModel;
 var searchView = new SearchView({model:searchModel});
 
-var graphView = new DiGraphView({dbTables:['side_effects_digraph_soc_with_known.json', 'side_effects_digraph_with_known.json'], stageWidth: 1000});
+var stageWidth = $('#stage').parent().width();
+
+var graphView = new DiGraphView({dbTables:['side_effects_digraph_soc_with_known.json', 'side_effects_digraph_with_known.json'], stageWidth: stageWidth});
 graphView.onStage();
 
 searchModel.listenTo(graphView.dots,'autoCompleteListGot',function(){

@@ -164,6 +164,11 @@ a {
   color: #fff;
 }
 
+#footer ul {
+  list-style-type: none;
+  padding: 0;
+}
+
 #footer a,
 #footer p {
   color: #ddd;
