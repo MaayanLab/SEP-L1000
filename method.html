@@ -1,56 +1,101 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
-      <h4>Collection of ADRs, biological and chemical attributes of drugs</h4>
-      <p>
-        On-label ADRs of FDA-approved drugs were downloaded from SIDER [3], which covers 996 marketed drugs, 4,192 ADRs and 99,423 drug-ADR associations. Off-label ADRs were retrieved from the Offside table [31], which processed the post-market ADR reports of FDA Adverse Event Report System (FAERS), covering 1,322 drugs, 10,097 ADRs and 438,801 drug-ADR associations.
-      </p>
+      <div id="method">
+        <h4>Collection of ADRs, biological and chemical attributes of drugs</h4>
+        <p>
+          On-label ADRs of FDA-approved drugs were downloaded from SIDER <a href="#ref1">[1]</a>, which covers 996 marketed drugs, 4,192 ADRs and 99,423 drug-ADR associations. Off-label ADRs were retrieved from the Offside table <a href="#ref2">[2]</a>, which processed the post-market ADR reports of FDA Adverse Event Report System (FAERS), covering 1,322 drugs, 10,097 ADRs and 438,801 drug-ADR associations.
+        </p>
 
-      <p>
-        The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of OMOP [32, 33] (http://omop.org/ResearchArchive), with biotech drugs removed, resulting in 62, 78, 60 and 40 individual drugs for the four ADRs, respectively.
-      </p>
+        <p>
+          The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of OMOP [<a href="#ref3">3</a>,<a href="#ref4">4</a>] (<a href="http://omop.org/ResearchArchive">http://omop.org/ResearchArchive</a>), with biotech drugs removed, resulting in 62, 78, 60 and 40 individual drugs for the four ADRs, respectively.
+        </p>
 
-      <p>
-        The gene expression profiles of 20,413 small molecule compound perturbation were collected from the LINCS L1000 project. We downloaded the quantile-normalized gene expression profiles of all replicates. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided though the API of lincscloud.org regardless of the cell type, dosage and time point of the drug perturbation. We then used Characteristic Direction (CD) [34] to compute gene expression signatures for drug perturbations in the gene expression space of the 978 directly measured landmark genes as well as in the space of all measured and imputed genes. Alternatively, we also downloaded the level 4 data from lincscloud.org, which is the gene expression signature computed by modulated z-scores as another way of representing the gene expression profiles of drug perturbations. 
-      </p>
+        <p>
+          The gene expression profiles of 20,413 small molecule compound perturbation were collected from the LINCS L1000 project. We downloaded the quantile-normalized gene expression profiles of all replicates. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided though the API of lincscloud.org regardless of the cell type, dosage and time point of the drug perturbation. We then used Characteristic Direction (CD) <a href="#ref5">[5]</a> to compute gene expression signatures for drug perturbations in the gene expression space of the 978 directly measured landmark genes as well as in the space of all measured and imputed genes. Alternatively, we also downloaded the level 4 data from lincscloud.org, which is the gene expression signature computed by modulated z-scores as another way of representing the gene expression profiles of drug perturbations. 
+        </p>
 
-      <p>
-        A geometric extension of CD called Principal Angle Enrichment Analysis (PAEA) was used to compute enrichment p-value for each CD in the space of all genes against gene sets in Gene Ontology including Biological Processes, Cellular Components and Molecular Functions. 
-      </p>
+        <p>
+          A geometric extension of CD called Principal Angle Enrichment Analysis (PAEA) was used to compute enrichment p-value for each CD in the space of all genes against gene sets in Gene Ontology including Biological Processes, Cellular Components and Molecular Functions. 
+        </p>
 
-      <p>
-        The cell morphological profiles were downloaded from the MLPCN project at the Broad institute [35, 36]. The data are processed imaging data with sample aggregation. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment of drugs.
-      </p>
+        <p>
+          The cell morphological profiles were downloaded from the MLPCN project at the Broad institute [<a href="#ref6">6</a>, <a href="#ref7">7</a>]. The data are processed imaging data with sample aggregation. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment of drugs.
+        </p>
 
-      <p>
-        The 2D chemical structures of small molecule compounds are represented in simplified molecular-input line-entry system (SMILES) format. The SMILES strings for marketed drugs were collected from PubChem using PubChem Compound ID provided in SIDER. The SMILES strings for other small molecule compounds were provided in the metadata of LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox [37] and RDKit (http://www.rdkit.org), respectively. 
-      </p>
+        <p>
+          The 2D chemical structures of small molecule compounds are represented in simplified molecular-input line-entry system (SMILES) format. The SMILES strings for marketed drugs were collected from PubChem using PubChem Compound ID provided in SIDER. The SMILES strings for other small molecule compounds were provided in the metadata of LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox <a href="#ref8">[8]</a> and RDKit (<a href="http://www.rdkit.org">http://www.rdkit.org</a>), respectively. 
+        </p>
 
-      <p>
-        To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to canonical SMILES strings by Open Babel, which were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that are unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank [38]. Collectively, 826 small molecule compounds were mapped to marketed drugs in SIDER. After collecting those drug attributes, we proposed to use gene expression, chemical fingerprints and morphological profiles to prediction ADRs (Fig. S1).
-      </p>
+        <p>
+          To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to canonical SMILES strings by Open Babel, which were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that are unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank <a href="#ref9">[9]</a>. Collectively, 826 small molecule compounds were mapped to marketed drugs in SIDER. After collecting those drug attributes, we proposed to use gene expression, chemical fingerprints and morphological profiles to prediction ADRs.
+        </p>
 
-      <h4>Prediction of ADRs using multi-label classification</h4>
-      <p>
-        We formulate the problem of predicting multiple ADRs for each drug as a multi-label classification problem. Formally, the multi-label classification problem we are trying to solve is to find a model that maps inputs x to binary vectors y, where as x represents the attribute vector of a drug and the label vector y is a vector of Boolean values describing whether the drug cause the corresponding ADRs. 
-      </p>
+        <h4>Prediction of ADRs using multi-label classification</h4>
+        <p>
+          We formulate the problem of predicting multiple ADRs for each drug as a multi-label classification problem. Formally, the multi-label classification problem we are trying to solve is to find a model that maps inputs x to binary vectors y, where as x represents the attribute vector of a drug and the label vector y is a vector of Boolean values describing whether the drug cause the corresponding ADRs. 
+        </p>
 
-      <p>
-        We employed binary relevance method [39] to transform the multi-label classification problem to a set of independent single label classification tasks, and coupled with various binary classifiers to the model.
-      </p>
+        <p>
+          We employed binary relevance method <a href="#ref10">[10]</a> to transform the multi-label classification problem to a set of independent single label classification tasks, and coupled with various binary classifiers to the model.
+        </p>
 
-      <p>
-        Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection [40] was used for each ADR to prioritize the top 50 best predictive features. 75% of the drugs were randomly sampled and a logistic regression model was learned from the subset of the data with regularization parameter equals to 1. The coefficient of the decision function for each drug feature from the logistic regression model was recorded. This procedure was repeated 200 times. The coefficients were then averaged and used as measurement of feature importance. 
-      </p>
+        <p>
+          Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection <a href="#ref11">[11]</a> was used for each ADR to prioritize the top 50 best predictive features. 75% of the drugs were randomly sampled and a logistic regression model was learned from the subset of the data with regularization parameter equals to 1. The coefficient of the decision function for each drug feature from the logistic regression model was recorded. This procedure was repeated 200 times. The coefficients were then averaged and used as measurement of feature importance. 
+        </p>
 
-      <p>
-        Extremely randomized trees (ET) [41] classifiers were trained for each ADR and cross-validated using 3-fold cross-validation. The number of trees in the forest was set to 100. All the other parameters of ET were set to default recommended settings in the Scikit-Learn Python package [42]. 
-      </p>
+        <p>
+          Extremely randomized trees (ET) <a href="#ref12">[12]</a> classifiers were trained for each ADR and cross-validated using 3-fold cross-validation. The number of trees in the forest was set to 100. All the other parameters of ET were set to default recommended settings in the Scikit-Learn Python package <a href="#ref13">[13]</a>. 
+        </p>
 
-      <p>
-        To evaluate the multi-label classification model, both instance-based and label-based metrics have been used. Micro-averaged Receiver Operating Characteristic (ROC) curves and Hamming loss were employed for instance-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct ADRs to individual drugs. Area Under the ROC curves (AUROC) and area under the Matthews Correlation Coefficient (MCC)-Recall curves was used for label-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct drugs for individual ADRs.
-      </p>
-
+        <p>
+          To evaluate the multi-label classification model, both instance-based and label-based metrics have been used. Micro-averaged Receiver Operating Characteristic (ROC) curves and Hamming loss were employed for instance-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct ADRs to individual drugs. Area Under the ROC curves (AUROC) and area under the Matthews Correlation Coefficient (MCC)-Recall curves was used for label-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct drugs for individual ADRs.
+        </p>
+      </div>
+      <div id="references">
+        <h4>References</h4>
+        <ol>
+          <li id="ref1">
+            Kuhn M, Campillos M, Letunic I, Jensen LJ, Bork P: <strong>A side effect resource to capture phenotypic effects of drugs.</strong> <i>Molecular systems biology</i> 2010, 6(1).
+          </li>
+          <li id="ref2">
+            Tatonetti NP, Ye PP, Daneshjou R, Altman RB: <strong>Data-Driven Prediction of Drug Effects and Interactions.</strong> <i>Science Translational Medicine</i> 2012, 4(125):125ra131.
+          </li>
+          <li id="ref3">
+            Ryan PB, Madigan D, Stang PE, Schuemie MJ, Hripcsak G: <strong>Medication-Wide Association Studies.</strong> <i>CPT: Pharmacometrics &amp; Systems Pharmacology</i> 2013, 2(9):1-12.
+          </li>
+          <li id="ref4">
+            Ryan PB, Madigan D, Stang PE, Marc Overhage J, Racoosin JA, Hartzema AG: <strong>Empirical assessment of methods for risk identification in healthcare data: results from the experiments of the Observational Medical Outcomes Partnership.</strong> <i>Statistics in medicine</i> 2012, 31(30):4401-4415.
+          </li>
+          <li id="ref5">
+            Clark N, Hu K, Feldmann A, Kou Y, Chen E, Duan Q, Ma'ayan A: <strong>The characteristic direction: a geometrical approach to identify differentially expressed genes.</strong> <i>BMC bioinformatics</i> 2014, 15(1):79.
+          </li>
+          <li id="ref6">
+            Wawer MJ, Jaramillo DE, Dančík V, Fass DM, Haggarty SJ, Shamji AF, Wagner BK, Schreiber SL, Clemons PA: <strong>Automated Structure–Activity Relationship Mining: Connecting Chemical Structure to Biological Profiles.</strong> <i>Journal of Biomolecular Screening</i> 2014, 19(5):738-748.
+          </li>
+          <li id="ref7">
+            Wawer MJ, Li K, Gustafsdottir SM, Ljosa V, Bodycombe NE, Marton MA, Sokolnicki KL, Bray M-A, Kemp MM, Winchester E et al: <strong>Toward performance-diverse small-molecule libraries for cell-based phenotypic screening using multiplexed high-dimensional profiling.</strong> <i>Proceedings of the National Academy of Sciences</i> 2014, 111(30):10911-10916.
+          </li>
+          <li id="ref8">
+            O'Boyle N, Banck M, James C, Morley C, Vandermeersch T, Hutchison G: <strong>Open Babel: An open chemical toolbox.</strong> <i>Journal of Cheminformatics</i> 2011, 3(1):33.
+          </li>
+          <li id="ref9">
+            Law V, Knox C, Djoumbou Y, Jewison T, Guo AC, Liu Y, Maciejewski A, Arndt D, Wilson M, Neveu V et al: <strong>DrugBank 4.0: shedding new light on drug metabolism.</strong> <i>Nucleic Acids Research</i> 2014, 42(D1):D1091-D1097.
+          </li>
+          <li id="ref10">
+            Grigorios T, Ioannis K: <strong>Multi-Label Classification: An Overview.</strong> <i>International Journal of Data Warehousing and Mining (IJDWM)</i> 2007, 3(3):1-13.
+          </li>
+          <li id="ref11">
+            Meinshausen N, Bühlmann P: <strong>Stability selection.</strong> <i>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</i> 2010, 72(4):417-473.
+          </li>
+          <li id="ref12">
+            Geurts P, Ernst D, Wehenkel L: <strong>Extremely randomized trees.</strong> <i>Mach Learn</i> 2006, 63(1):3-42.
+          </li>
+          <li id="ref13">
+            Pedregosa F, Ga, #235, Varoquaux l, Gramfort A, Michel V, Thirion B, Grisel O, Blondel M, Prettenhofer P et al: <strong>Scikit-learn: Machine Learning in Python.</strong> <i>J Mach Learn Res</i> 2011, 12:2825-2830.
+          </li>
+        </ol>
+      </div>
     </div>
   </div>
 </div>
