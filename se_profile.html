@@ -61,7 +61,19 @@
               },
               complete: function(){
                 $("#table_drug").dataTable({
-                  dom: 'Rlfrtip',
+                  "sDom": 'T<"clear">lfrtip',
+                  "oTableTools": {
+                      "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
+                      "aButtons": [
+                      "copy",
+                      "print",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": 'Save <span class="caret" />',
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                      ]
+                  },
                   colReorder:{order: [1,0,2,3]},
                   "order": [[2, 'desc']],
                   "deferRender": true,
