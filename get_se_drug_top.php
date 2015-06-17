@@ -10,17 +10,27 @@ if (isset($_GET['topn'])) {
 	$topn = 100;
 }
 
+if (isset($_GET['filter'])) {
+	$filter = $_GET['filter'];
+} else {
+	$filter = False;
+}
+
 $conn = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 if ($conn->connect_error) {
   trigger_error('Database connection failed: ' . $conn->connect_error, E_USER_ERROR);
 }
 
-$query = "SELECT drug_id,p_val FROM prediction INNER JOIN side_effects ON prediction.se_id = side_effects.id WHERE umls_id='$umls_id' ORDER BY p_val DESC LIMIT $topn";
-$drugs = query_mysql($query, $conn); // drug_id and pvals
-
 // get drug associated with this SE in SIDER
 $query = "SELECT drug_id FROM sider_connections INNER JOIN side_effects ON sider_connections.se_id = side_effects.id WHERE umls_id='$umls_id'";
 $known_drugs = query_mysql($query, $conn);
+
+if ($filter) { // want to reach topn after filtering out known drugs
+	$topn = count($known_drugs) + $topn;
+}
+
+$query = "SELECT drug_id,p_val FROM prediction INNER JOIN side_effects ON prediction.se_id = side_effects.id WHERE umls_id='$umls_id' ORDER BY p_val DESC LIMIT $topn";
+$drugs = query_mysql($query, $conn); // drug_id and pvals
 
 
 $known_drug_ids = array();

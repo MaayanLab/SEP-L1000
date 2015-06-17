@@ -22,6 +22,13 @@ var Dot = Backbone.Model.extend({
 		});
 		var sideEffect = self.get('label');
 		$("#currentSE").text(sideEffect); // to display the name of the current side effect
+	},
+
+	updateInfo: function(filter, topn){ // to filter or not to filter known drugs 
+		var self = this;
+		$.getJSON('get_se_drug_top.php', {umls_id: this.id, topn: topn, filter: filter}, function(json) {
+			updateNodeInfo("#nodeInfo", self, json);
+		});
 	}
 });
 
@@ -515,8 +522,53 @@ function classes(root) {
   }
   recurse(null, root);
   return {children: classes};
-}
+};
 
+updateNodeInfo = function(nodeInfoSelector, model, info){
+	// only update the table part of the DOM created by displayNodeInfo
+	d3.select(nodeInfoSelector + ' tbody').remove();
+	var table = d3.select(nodeInfoSelector + ' table');
+	var tbody = table.append('tbody');
+	// sort genes based on p-values 
+	sortedGenePval = _.sortBy(info, function(o) { return -o.p_val });
+	// use d3 to bind data
+	var trs = tbody.selectAll('tr').data(sortedGenePval)
+		.enter()
+		.append('tr')
+	var tdDrug = trs.append('td')
+		.append('a')
+		.text(function(d){
+			if (d.sider === 'yes') {
+				return [d.name + '*'];	
+			} else {
+				return [d.name];
+			}
+		})
+		.attr('title', function(d){return 'more info about '+d.name;})
+		.attr('href', function(d){return '#drug/'+d.pert_id});
+
+	trs.append('td')
+		.text(function(d){ return d.pert_id;} );
+	var fmt = d3.format(".2f")
+	trs.append('td')
+		.text(function(d){return fmt(d.p_val)} ) // pval
+
+	$("#filterAnchor").text(function(i, v){
+		if (v === 'show') {
+			d3.select(this).on('click', function(){
+				model.updateInfo(true, 100); // to filter
+			});
+			return 'filter';
+		} else{
+			d3.select(this).on('click', function(){
+				model.updateInfo(null, 100); // not to filter
+			})
+			return 'show';
+		};
+	});
+
+	$('[data-toggle="tooltip"]').tooltip();	
+};
 
 displayNodeInfo = function(nodeInfoSelector, model, info) { 
 	// control the open and close the the panel-body
@@ -543,8 +595,15 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.attr('href', '#se/'+model.get('id'))
 		.attr('target', '_blank');
 	div.append('br');
-	div.append("span")
-		.text("* drug already known to cause side effect");
+	var span = div.append("span")
+		.text("* Already known to cause side effect (")
+	span.append("a").text('filter') // to filter out known drugs
+		.attr('id', 'filterAnchor')
+		.attr('href', '##')
+		.on('click', function(){
+			model.updateInfo(true, 100);
+		});
+	span.append("span").text(")");
 
 	var table = div.append('table')
 		.attr('class', 'table table-hover table-striped table-condensed')
