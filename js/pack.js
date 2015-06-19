@@ -316,6 +316,7 @@ var DiGraphView = Backbone.View.extend({
 	centerDot: function(event){
  		// center and highlight searched dot
  		var self = this;
+ 		self.removeHighlighted();
  		this.svg.selectAll('g')
 			.filter(function(d){ return d.get('label').toLowerCase()
 											.search(event.term)>-1;})

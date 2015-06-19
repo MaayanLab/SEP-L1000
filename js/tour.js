@@ -15,7 +15,7 @@ function initTour() {
     }, 
     {
         content: [
-            '<p>Side effect can be searched by name</p>',
+            '<p>Side effects in the bubble chart can be searched by name</p>',
             '<p>For example, type "Neuropathy peripheral"</p>',
             '<p>Once searched, the dot representing the side effect will be centered. </p>'
         ].join(''),
@@ -67,6 +67,17 @@ function initTour() {
         target: $('#stage'),
         my: 'bottom center',
         at: 'top center'    	    	
+    },
+    {
+        content: [
+            '<p>Drug and side effect profiles that are available on the site can be searched using this search box. </p>'
+        ].join(''),
+        highlightTarget: true,
+        nextButton: true,
+        closeButton: true,
+        target: $('.form-group'),
+        my: 'top center',
+        at: 'bottom center'
     }
     ];
 
