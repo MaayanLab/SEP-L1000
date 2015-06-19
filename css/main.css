@@ -53,16 +53,14 @@ body {
 text {
   cursor: default; }
 
-.highlight {
-  fill: none;
-  stroke: black;
-  stroke-width: 2;
-  /*stroke-opacity:0.5;*/
-  pointer-events: none; }
-
 .highlight-legend {
   border-style: solid;
   border-color: black;
+}
+
+.highlight circle {
+  stroke: black;
+  stroke-width: 2;
 }
 
 #searchBox {

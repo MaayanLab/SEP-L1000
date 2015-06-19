@@ -322,32 +322,26 @@ var DiGraphView = Backbone.View.extend({
 			.each(function(d){
 				var D = [d.get('x'), d.get('y'), d.get('r')];
 				self.dots.preloadNodeInfo(d.get('id'));
-				var size = D[2]+1;
-			var highlight = self.svg.append('circle')
-					.datum([D[0],D[1]])
-					.attr('transform','translate(' + D[0] + "," + D[1] +')')
-					.attr('r', size)
-					.attr('class','highlight');
 
-			d3.select('g')
-				.attr('transform', function(){
-					self.currentScale = 1
-					self.zoomTranslate = [0, 0]
-					return null
-				})
-				.transition().duration(250).delay(250)
-				.attr('transform', function(){
-        	    	var tx = self.stageWidth/2 - D[0]
-        	    	var ty = (self.stageWidth/2 - D[1]) * 0.7
-        	    	self.zoomTranslate = [tx, ty]
-					return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
-				})
+				d3.select('g')
+					.attr('transform', function(){
+						self.currentScale = 1
+						self.zoomTranslate = [0, 0]
+						return null
+					})
+					.transition().duration(250).delay(250)
+					.attr('transform', function(){
+	        	    	var tx = self.stageWidth/2 - D[0]
+	        	    	var ty = (self.stageWidth/2 - D[1]) * 0.7
+	        	    	self.zoomTranslate = [tx, ty]
+						return "translate("+ tx + "," + ty + ")scale(" + self.currentScale + ")"
+					})
 
 			if (self.currentScale < 3.9) {
 				var zoomFactor = 4.0/self.currentScale;
 				self.zoomByFactor(zoomFactor)
 			};
-		});
+		}).classed('highlight', true);
 	},
 
 	zoomByFactor: function(factor){ // for zooming svg after button click
@@ -371,27 +365,15 @@ var DiGraphView = Backbone.View.extend({
 	highlightCategory: function(color){
 		// highlight dots of a certain category
 		var self = this;
-		// highlighted = []; // to collect the data of highlighted side effects
 		this.svg.selectAll('g')
 				.filter(function(d){ 
 					return d.get('color') === color; 
-				})
-				.each(function(d) {
-					// highlighted.push(d);
-					var D = [d.get('x'), d.get('y'), d.get('r')];
-					var size = D[2];
-					var highlight = self.svg.append('circle')
-						.datum([D[0], D[1]])
-						.attr('transform', 'translate(' + D[0] + ',' + D[1] + ')')
-						.attr('r', size)
-						.attr('class', 'highlight');
-				});
-		// return highlighted;
+				}).classed('highlight', true);
 	},
 
 	removeHighlighted: function(){
 		var self = this;
-		this.svg.selectAll('.highlight').remove();
+		this.svg.selectAll('.highlight').classed('highlight', false);
 	},	
 });
 
