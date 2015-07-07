@@ -20,7 +20,8 @@ var Router = Backbone.Router.extend({
 		'links': 'links',
 		'drug/:id': 'drug',
 		'se/:id': 'se',
-		'search/:searchStr': 'search'
+		'search/:searchStr': 'search',
+		'network': 'network'
 	},
 
 	home: function(){
@@ -83,7 +84,15 @@ var Router = Backbone.Router.extend({
 		hideTour();
 		$(this.el).load("search.html", function() {
 		});
-	}
+	},
+
+	network: function(){
+		$(this.el).load("network.html", function() {
+			hideTour();
+			removeActive();
+			$("#network").addClass('active');	
+		});
+	},
 
 });
 

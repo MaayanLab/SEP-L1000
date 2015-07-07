@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+  <head>
+     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+  </head>
+  <style type="text/css">
+.tooltip{ background-color:rgba(68,136,187,0.5);;
+          margin: 10px;
+          height: 50px;
+          width: 150px;
+          padding-left: 10px; 
+          padding-top: 10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+        }
+
+  </style>
+  <body>
+  <div class="example_div"></div>
+    <script type="text/javascript">
+d3.helper = {};
+
+d3.helper.tooltip = function(accessor){
+    return function(selection){
+        var tooltipDiv;
+        var bodyNode = d3.select('body').node();
+        selection.on("click", function(d, i){
+            // Clean up lost tooltips
+            d3.select('body').selectAll('div.tooltip').remove();
+            // Append tooltip
+            tooltipDiv = d3.select('body').append('div').attr('class', 'tooltip');
+            var absoluteMousePos = d3.mouse(bodyNode);
+            tooltipDiv.style('left', (absoluteMousePos[0] + 10)+'px')
+                .style('top', (absoluteMousePos[1] - 15)+'px')
+                .style('position', 'absolute') 
+                .style('z-index', 1001);
+            // Add text using the accessor function
+            var tooltipText = accessor(d, i) || '';
+            // Crop text arbitrarily
+            tooltipDiv.append('i')
+              .attr('class', 'glyphicon glyphicon-remove').on('click', function(){
+              tooltipDiv.remove();
+            });
+            tooltipDiv.append('div').html(tooltipText);
+        })
+
+    };
+};
+
+  
+var sampleSVG = d3.select(".example_div")
+  .append("svg:svg")
+  .attr("class", "sample")
+  .attr("width", 300)
+  .attr("height", 300);    
+  
+d3.select(".example_div svg")
+  .append("svg:circle")
+  .attr("stroke", "black")
+  .attr("fill", "aliceblue")
+  .attr("r", 50)
+  .attr("cx", 52)
+  .attr("cy", 52)
+  .call(d3.helper.tooltip(
+    function(d, i){
+      return "<b>"+'testing' + "</b><br/>pop: "+'testing2';
+    }
+  ));
+    </script>
+  </body>
+</html>
