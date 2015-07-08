@@ -4,6 +4,8 @@
 </div>
 
 <script>
+// console.log(window.jsonFileName)
+
 // tooltip for d3
 // ref: http://bl.ocks.org/rveciana/5181105
 d3.helper = {};
@@ -14,20 +16,21 @@ d3.helper.tooltip = function(accessor){
         var bodyNode = d3.select('#body').node();
         selection.on("click", function(d, i){
             // Clean up lost tooltips
-            d3.select('#body').selectAll('div.tooltip').remove();
+            d3.select('#body').selectAll('div.d3-tooltip').remove();
             // Append tooltip
-            tooltipDiv = d3.select('#body').append('div').attr('class', 'tooltip');
+            tooltipDiv = d3.select('#body').append('div').attr('class', 'd3-tooltip');
             var absoluteMousePos = d3.mouse(bodyNode);
             tooltipDiv.style('left', (absoluteMousePos[0] + 10)+'px')
                 .style('top', (absoluteMousePos[1] - 15)+'px')
                 .style('position', 'absolute')
-                // .style('background-color', '#333')
                 .style('z-index', 1001);
             // Add text using the accessor function
             var tooltipText = accessor(d, i) || '';
             // Crop text arbitrarily
             tooltipDiv.append('span')
-              .attr('class', 'glyphicon glyphicon-remove').on('click', function(){
+              .attr('class', 'glyphicon glyphicon-remove pull-right')
+              .style('cursor', 'pointer')
+              .on('click', function(){
               tooltipDiv.remove();
             });
             tooltipDiv.append('div').html(tooltipText);
@@ -36,6 +39,7 @@ d3.helper.tooltip = function(accessor){
     };
 };
 
+var fmt = d3.format('.3f')
 // ref: http://bl.ocks.org/eyaler/10586116
 var w = window.innerWidth;
 var h = window.innerHeight;
@@ -82,7 +86,9 @@ var zoom = d3.behavior.zoom().scaleExtent([min_zoom,max_zoom])
 var g = svg.append("g");
 svg.style("cursor","move");
 
-d3.json("data/GO_ADR_network.json", function(error, graph) {
+// d3.json("data/GO_ADR_network.json", function(error, graph) {
+// d3.json('data/pheno_ADR_network.json', function(error, graph) {
+d3.json(window.jsonFileName, function(error, graph) {
 
 var linkedByIndex = {};
     graph.links.forEach(function(d) {
@@ -124,7 +130,36 @@ var linkedByIndex = {};
     .call(force.drag)
 
     .call(d3.helper.tooltip(function(d, i){
-    	return '<b>' + d.id + '</b>';
+    	var title = 'GO term: '
+    	var baseUrl = 'http://amigo.geneontology.org/amigo/term/';
+    	var auroc = ''
+    	if (d.xref.indexOf(':') === -1) {
+    		baseUrl = '#se/';
+    		title = 'Side effect: '	;
+    		auroc = fmt(d.score);
+    	}
+
+    	if (d.xref.indexOf('HP:') > -1) { // HPO
+    		baseUrl = 'http://www.human-phenotype-ontology.org/hpoweb/showterm?id=';
+    		title = 'Human Phenotype: ';
+    	}
+
+    	if (d.xref.indexOf('MP:') > -1) {
+    		baseUrl = 'http://www.mousephenotype.org/data/phenotypes/';
+    		title = 'Mouse Phenotype';
+    	}
+
+    	if (d.xref.indexOf('ZP:') > -1) {
+    		baseUrl = 'http://www.berkeleybop.org/ontologies/upheno.obo#';
+    		title = 'Zebrafish Phenotype';
+    	}    	
+
+    	var html = '<dl><dt>'+title +'</dt><dd><a target="_blank" href="'+ baseUrl + d.xref+'">' + d.id + '</a></dd>';
+    	if (auroc !== '') {
+    		html += '<dt>AUROC: </dt><dd>' + auroc + '</dd>';	
+    	}
+    	html += '</dl>';
+    	return html
     }))
 
 	

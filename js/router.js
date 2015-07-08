@@ -21,7 +21,7 @@ var Router = Backbone.Router.extend({
 		'drug/:id': 'drug',
 		'se/:id': 'se',
 		'search/:searchStr': 'search',
-		'network': 'network'
+		'network/:name': 'network'
 	},
 
 	home: function(){
@@ -86,7 +86,14 @@ var Router = Backbone.Router.extend({
 		});
 	},
 
-	network: function(){
+	network: function(name){
+		if (name === 'GO'){
+			window.jsonFileName = 'data/GO_ADR_network.json';	
+		}
+		if (name === 'phenotype') {
+			window.jsonFileName = 'data/pheno_ADR_network.json'
+		}
+		
 		$(this.el).load("network.html", function() {
 			hideTour();
 			removeActive();
