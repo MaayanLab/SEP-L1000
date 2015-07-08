@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 
 if (isset($_GET['term'])) {
 	$searchq = $_GET["term"];
-	$searchq = preg_replace("#[^0-9a-z]#i", "", $searchq);
+	$searchq = preg_replace("#[^0-9a-z-]#i", "", $searchq);
 	$searchq = "%" . $searchq . "%";
 
 	$query1 = "SELECT pert_id, pert_iname, alt_name FROM drugs_lincs WHERE pert_id LIKE '$searchq' OR pert_iname LIKE '$searchq' OR alt_name LIKE '$searchq'";

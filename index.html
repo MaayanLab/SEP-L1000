@@ -42,7 +42,7 @@
                 </li>
 
                 <li id="network" class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown">Side Effect Network Visualization<span class="caret"></span></a>
+                  <a class="dropdown-toggle" data-toggle="dropdown">Side Effect Term Associations<span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li><a href="#network/GO" class="tour-close">Side Effect-GO term network</a></li>
                     <li class="divider"></li>
@@ -54,7 +54,7 @@
                 <li id="links"><a href="#links">Links</a></li>
                 <li><a href="#" id="tour">Take a tour</a></li>
               </ul>
-              <form class="navbar-form navbar-right" role="search" action="#search/">
+              <form class="navbar-form navbar-right" role="search" method="GET" onsubmit="searchFun(); return false;">
                 <div class="form-group">              
                   <div class="input-group input-group-md">
                     <input type="text" class="form-control" name="search" placeholder="Search for drugs/side effects" />
@@ -125,6 +125,11 @@
             });
           });
         });
+        function searchFun () {
+          var searchStr = $("[name=search]").val();
+          var url = window.location.href.split('#')[0]
+          window.location.href = url + '#search/' + searchStr
+        }
         </script>
         <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5575a75363e11adb" async="async"></script>
 
