@@ -198,3 +198,10 @@ a {
     /*border-radius:10px;*/
     opacity: 1;
         }
+
+figure {
+  display:inline-block;
+  margin:10px;
+  vertical-align:top;
+  text-align: center ;
+}

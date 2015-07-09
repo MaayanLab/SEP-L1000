@@ -2,17 +2,23 @@
   <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
       <div id="method">
+        
+        <figure>
+          <img src="img/Fig1.png" width="800px">
+          <figcaption>Figure 1. Overview of the workflow for this study. (A) Venn diagram shows the overlap between drugs and small molecule compounds across different data sources. (B) Representation of the use of drug-feature matrices of different feature sets to predict adverse drug reactions using multilabel classification.</figcaption>
+        </figure>  
+
         <h4>Collection of ADRs, biological and chemical attributes of drugs</h4>
         <p>
           On-label ADRs of FDA-approved drugs were downloaded from SIDER <a href="#ref1">[1]</a>, which covers 996 marketed drugs, 4,192 ADRs and 99,423 drug-ADR associations. Off-label ADRs were retrieved from the Offside table <a href="#ref2">[2]</a>, which processed the post-market ADR reports of FDA Adverse Event Report System (FAERS), covering 1,322 drugs, 10,097 ADRs and 438,801 drug-ADR associations.
         </p>
 
         <p>
-          The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of OMOP [<a href="#ref3">3</a>,<a href="#ref4">4</a>] (<a href="http://omop.org/ResearchArchive">http://omop.org/ResearchArchive</a>), with biotech drugs removed, resulting in 62, 78, 60 and 40 individual drugs for the four ADRs, respectively.
+          The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of OMOP [<a href="#ref3">3</a>,<a href="#ref4">4</a>] (<a href="http://omop.org/ResearchArchive">http://omop.org/ResearchArchive</a>).
         </p>
 
         <p>
-          The gene expression profiles of 20,413 small molecule compound perturbation were collected from the LINCS L1000 project. We downloaded the quantile-normalized gene expression profiles of all replicates. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided though the API of lincscloud.org regardless of the cell type, dosage and time point of the drug perturbation. We then used Characteristic Direction (CD) <a href="#ref5">[5]</a> to compute gene expression signatures for drug perturbations in the gene expression space of the 978 directly measured landmark genes as well as in the space of all measured and imputed genes. Alternatively, we also downloaded the level 4 data from lincscloud.org, which is the gene expression signature computed by modulated z-scores as another way of representing the gene expression profiles of drug perturbations. 
+          The gene expression profiles of 20,413 small molecule compound perturbation were collected from the LINCS L1000 project. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided though the API of <a href="http://www.lincscloud.org/">lincscloud.org</a>regardless of the cell type, dosage and time point of the drug perturbation. We then used Characteristic Direction (CD) <a href="#ref5">[5]</a> to compute gene expression signatures for drug perturbations in the gene expression space of the 978 directly measured landmark genes as well as in the space of all measured and imputed genes.
         </p>
 
         <p>
@@ -20,15 +26,15 @@
         </p>
 
         <p>
-          The cell morphological profiles were downloaded from the MLPCN project at the Broad institute [<a href="#ref6">6</a>, <a href="#ref7">7</a>]. The data are processed imaging data with sample aggregation. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment of drugs.
+          The cell morphological profiles were downloaded from the MLPCN project at the Broad institute [<a href="#ref6">6</a>, <a href="#ref7">7</a>]. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment of drugs.
         </p>
 
         <p>
-          The 2D chemical structures of small molecule compounds are represented in simplified molecular-input line-entry system (SMILES) format. The SMILES strings for marketed drugs were collected from PubChem using PubChem Compound ID provided in SIDER. The SMILES strings for other small molecule compounds were provided in the metadata of LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox <a href="#ref8">[8]</a> and RDKit (<a href="http://www.rdkit.org">http://www.rdkit.org</a>), respectively. 
+          The 2D chemical structures of small molecule compounds are represented in simplified molecular-input line-entry system (SMILES) format. The SMILES strings for other small molecule compounds were provided in the metadata of LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox <a href="#ref8">[8]</a> and RDKit (<a href="http://www.rdkit.org">http://www.rdkit.org</a>), respectively. 
         </p>
 
         <p>
-          To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to canonical SMILES strings by Open Babel, which were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that are unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank <a href="#ref9">[9]</a>. Collectively, 826 small molecule compounds were mapped to marketed drugs in SIDER. After collecting those drug attributes, we proposed to use gene expression, chemical fingerprints and morphological profiles to prediction ADRs.
+          To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to canonical SMILES strings by Open Babel, which were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that are unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank <a href="#ref9">[9]</a>. 
         </p>
 
         <h4>Prediction of ADRs using multi-label classification</h4>
@@ -41,7 +47,7 @@
         </p>
 
         <p>
-          Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection <a href="#ref11">[11]</a> was used for each ADR to prioritize the top 50 best predictive features. 75% of the drugs were randomly sampled and a logistic regression model was learned from the subset of the data with regularization parameter equals to 1. The coefficient of the decision function for each drug feature from the logistic regression model was recorded. This procedure was repeated 200 times. The coefficients were then averaged and used as measurement of feature importance. 
+          Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection <a href="#ref11">[11]</a> was used for each ADR to prioritize the top 50 best predictive features. 
         </p>
 
         <p>
@@ -96,6 +102,21 @@
           </li>
         </ol>
       </div>
+
+      <div id="video">
+        <h4>Video presentation</h4>
+        <div class="embed-responsive embed-responsive-16by9">
+          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/EHUAU05O0kQ" allowfullscreen></iframe>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
+<script>
+$(document).ready(function(){
+  $("img").attr("width", function(){
+    return $(this).parent().width();
+  })
+});
+</script>
