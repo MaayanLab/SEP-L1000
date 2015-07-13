@@ -402,7 +402,7 @@ var SearchView = Backbone.View.extend({
 
 	initialize: function(){
 		this.$el = $('#searchBox');
-		this.width = this.$el.parent().width();
+		// this.width = this.$el.parent().width();
 		this.$el.width(this.width - 4);
 		this.minLength = 3;
 		this.listenTo(this.model,'change:autoCompleteList',this.updateList);

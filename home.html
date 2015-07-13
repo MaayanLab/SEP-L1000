@@ -2,8 +2,12 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
-      <input id="searchBox" placeholder="Type to search side effects in the bubble chart"></input>
+      <div class="form-group">
+        <input type="text" id="searchBox" class="form-control" placeholder="Type to search side effects in the bubble chart"></input>
+      </div>
+      
       <div id="colorLegend" class="well well-sm">
+
         <h5>Current side effect: <b id="currentSE"></b></h5>
         <h6>System organ classes of side effects:</h6>
         <small>Click a legend to highlight all the corresponding side effects that belong to a class of side effects</small>

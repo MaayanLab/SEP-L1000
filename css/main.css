@@ -72,10 +72,10 @@ text {
   /*width: 600px;*/
   /*background-color: #465257;*/
   /*color: azure;*/
-  /*border-color: #656468;*/
+  border-color: #000;
   /*border-color: azure;*/
-  /*border-width: 1px;*/
-  padding-top: 4px;
+  border-width: 2px;
+  /*padding-top: 4px;*/
   text-align: center;
   padding-bottom: 4px;
   border-style: solid;
