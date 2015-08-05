@@ -5,57 +5,57 @@
         
         <figure>
           <img src="img/Fig1.png" width="800px">
-          <figcaption>Figure 1. Overview of the workflow for this study. (A) Venn diagram shows the overlap between drugs and small molecule compounds across different data sources. (B) Representation of the use of drug-feature matrices of different feature sets to predict adverse drug reactions using multilabel classification.</figcaption>
+          <figcaption>Figure 1. Workflow overview. (A) Venn diagram shows the overlap between drugs and small molecule compounds across different data sources. (B) Representation of the use of drug-feature matrices of different types to predict adverse drug reactions using multi-label classification.</figcaption>
         </figure>  
 
         <h4>Collection of ADRs, biological and chemical attributes of drugs</h4>
         <p>
-          On-label ADRs of FDA-approved drugs were downloaded from SIDER <a href="#ref1">[1]</a>, which covers 996 marketed drugs, 4,192 ADRs and 99,423 drug-ADR associations. Off-label ADRs were retrieved from the Offside table <a href="#ref2">[2]</a>, which processed the post-market ADR reports of FDA Adverse Event Report System (FAERS), covering 1,322 drugs, 10,097 ADRs and 438,801 drug-ADR associations.
+          On-label ADRs of FDA-approved drugs were downloaded from SIDER <a href="#ref1">[1]</a>, which covers 996 marketed drugs, 4,192 ADRs and 99,423 drug-ADR associations. Off-label ADRs were retrieved from the Offside table <a href="#ref2">[2]</a>, which has processed data from the post-market ADR reports within the FDA Adverse Event Report System (FAERS), covering 1,322 drugs, 10,097 ADRs and 438,801 drug-ADR associations.
         </p>
 
         <p>
-          The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of OMOP [<a href="#ref3">3</a>,<a href="#ref4">4</a>] (<a href="http://omop.org/ResearchArchive">http://omop.org/ResearchArchive</a>).
+          The ADR terms are mapped to Preferred Terms (PTs) coded in MedDRA v16.0. The reference gold standard for the four clinically significant ADRs: upper gastrointestinal ulcer, acute liver failure, acute myocardial infarction and acute kidney failure were downloaded from the website of Observational Medical Outcomes Partnership (OMOP) web-site [<a href="#ref3">3</a>,<a href="#ref4">4</a>] (<a href="http://omop.org/ResearchArchive">http://omop.org/ResearchArchive</a>).
         </p>
 
         <p>
-          The gene expression profiles of 20,413 small molecule compound perturbation were collected from the LINCS L1000 project. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided though the API of <a href="http://www.lincscloud.org/">lincscloud.org</a>regardless of the cell type, dosage and time point of the drug perturbation. We then used Characteristic Direction (CD) <a href="#ref5">[5]</a> to compute gene expression signatures for drug perturbations in the gene expression space of the 978 directly measured landmark genes as well as in the space of all measured and imputed genes.
+          The gene expression profiles from the 20,413 small molecule compound perturbations were gathered from the LINCS L1000 project. For each small molecule compounds, we chose the set of experiments with the strongest signature strength provided by the <a href="http://www.lincscloud.org/">lincscloud.org</a> API regardless of the cell type, dosage or time point of the drug perturbation. We then used the Characteristic Direction (CD) method <a href="#ref5">[5]</a> to compute gene expression signatures for drug perturbations for in the gene expression space of the 978 directly measured landmark genes as well as for in the space of all measured and imputed genes.
         </p>
 
         <p>
-          A geometric extension of CD called Principal Angle Enrichment Analysis (PAEA) was used to compute enrichment p-value for each CD in the space of all genes against gene sets in Gene Ontology including Biological Processes, Cellular Components and Molecular Functions. 
+          A geometric extension of CD called Principal Angle Enrichment Analysis (PAEA) was used to compute enrichment p-values for each CD in the space of all genes against gene sets created from the in Gene Ontology including Biological Processes, Cellular Components and Molecular Functions. 
         </p>
 
         <p>
-          The cell morphological profiles were downloaded from the MLPCN project at the Broad institute [<a href="#ref6">6</a>, <a href="#ref7">7</a>]. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment of drugs.
+          The cell morphological profiles were downloaded from the Molecular Libraries Probe Production Centers Network (MLPCN) project web-site hosted at the Broad institute [<a href="#ref6">6</a>, <a href="#ref7">7</a>]. Each small molecule compound has 812 morphological feature descriptors with numerical values extracted from the cell painting images, representing the morphological changes of the cell upon treatment with drugs.
         </p>
 
         <p>
-          The 2D chemical structures of small molecule compounds are represented in simplified molecular-input line-entry system (SMILES) format. The SMILES strings for other small molecule compounds were provided in the metadata of LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox <a href="#ref8">[8]</a> and RDKit (<a href="http://www.rdkit.org">http://www.rdkit.org</a>), respectively. 
+          The 2D chemical structures of small molecule compounds are represented using the simplified molecular-input line-entry system (SMILES) format. The SMILES strings for other small molecule compounds were provided in the metadata of the LINCS L1000 and MLPCN projects. We then computed the 166-bit Molecular ACCess System (MACCS) and the 881-bit CACTVS/PubChem chemical fingerprints using the Open Babel cheminformatic toolbox <a href="#ref8">[8]</a> and the RDKit (<a href="http://www.rdkit.org">http://www.rdkit.org</a>) package, respectively. 
         </p>
 
         <p>
-          To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to canonical SMILES strings by Open Babel, which were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that are unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank <a href="#ref9">[9]</a>. 
+          To map marketed drugs to small molecule compounds profiled in the LINCS L1000 project and MLPCN project, SMILES strings of drugs were desaltinized and converted to the canonical SMILES strings using Open Babel; these were further used to map to the "pert_id" of small molecule compounds profiled in the LINCS L1000 and MLPCN projects. Drugs that we were unable to be mapped to pert_id were then mapped using names and synonyms retrieved from DrugBank <a href="#ref9">[9]</a>. 
         </p>
 
         <h4>Prediction of ADRs using multi-label classification</h4>
         <p>
-          We formulate the problem of predicting multiple ADRs for each drug as a multi-label classification problem. Formally, the multi-label classification problem we are trying to solve is to find a model that maps inputs x to binary vectors y, where as x represents the attribute vector of a drug and the label vector y is a vector of Boolean values describing whether the drug cause the corresponding ADRs. 
+          We formulated the problem of predicting multiple ADRs for each drug as a multi-label classification problem. Formally, the multi-label classification problem we are trying to solve is to find a model that maps inputs x to binary vectors y, where as x represents the attribute vector of a drug, and the label vector y is a vector of Boolean values describing whether the drug cause the corresponding ADRs. 
         </p>
 
         <p>
-          We employed binary relevance method <a href="#ref10">[10]</a> to transform the multi-label classification problem to a set of independent single label classification tasks, and coupled with various binary classifiers to the model.
+          We employed a binary relevance method <a href="#ref10">[10]</a> to transform the multi-label classification problem to a set of independent single label classification tasks, and coupled these with various binary classifiers to construct the model.
         </p>
 
         <p>
-          Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection <a href="#ref11">[11]</a> was used for each ADR to prioritize the top 50 best predictive features. 
+          Drug attribute sets including gene expression, chemical structure, cell morphological profiles and GO enrichment vectors were combined by feature selection. Since binary relevance approach was chosen for multi-label classification, feature selection was also performed independently for each ADR. Briefly, stability selection <a href="#ref11">[11]</a> was used for each ADR to prioritize the top 50 best predictive features. 
         </p>
 
         <p>
-          Extremely randomized trees (ET) <a href="#ref12">[12]</a> classifiers were trained for each ADR and cross-validated using 3-fold cross-validation. The number of trees in the forest was set to 100. All the other parameters of ET were set to default recommended settings in the Scikit-Learn Python package <a href="#ref13">[13]</a>. 
+          Extremely randomized trees (ET) <a href="#ref12">[12]</a> classifiers were trained for each ADR and cross-validated using 3-fold cross-validation. The number of trees in the forest was set to 100. All the other parameters of ET were set to the default recommended settings in the Scikit-Learn Python package <a href="#ref13">[13]</a>. 
         </p>
 
         <p>
-          To evaluate the multi-label classification model, both instance-based and label-based metrics have been used. Micro-averaged Receiver Operating Characteristic (ROC) curves and Hamming loss were employed for instance-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct ADRs to individual drugs. Area Under the ROC curves (AUROC) and area under the Matthews Correlation Coefficient (MCC)-Recall curves was used for label-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct drugs for individual ADRs.
+          To evaluate the multi-label classification model, both instance-based and label-based metrics were used. Micro-averaged Receiver Operating Characteristic (ROC) curves and Hamming Loss were employed for instance-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct ADRs to individual drugs. Area under the ROC curves (AUROC) and area under the Matthews Correlation Coefficient (MCC)-Recall curves was used for label-based evaluations to evaluate the performance of the multi-label classifiers in assigning the correct drugs for individual ADRs.
         </p>
       </div>
       <div id="references">
@@ -104,7 +104,7 @@
       </div>
 
       <div id="video">
-        <h4>Video presentation</h4>
+        <h4>A webinar discussing the project was presented by Zichen Wang on April 14th, 2015 and is available on YouTube </h4>
         <div class="embed-responsive embed-responsive-16by9">
           <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/EHUAU05O0kQ" allowfullscreen></iframe>
         </div>
