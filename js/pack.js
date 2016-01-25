@@ -308,6 +308,18 @@ var DiGraphView = Backbone.View.extend({
 			+ ")scale(" + d3.event.scale + ")"); 		
  	},
 
+ 	findColor: function(term){
+ 		// find the color for searched dot
+ 		// term should be the term being searched for
+ 		this.svg.selectAll('g')
+			.filter(function(d){ return d.get('label').toLowerCase()
+											.search(term)>-1;})
+			.each(function(d){
+				c = d.get('color') 
+			})
+		return c;
+ 	},
+
 	centerDot: function(event){
  		// center and highlight searched dot
  		var self = this;
@@ -740,4 +752,8 @@ graphView.listenTo(legend, 'legendClicked', function(color){
 legend.listenTo(graphView, 'dotClicked', function(color){
 	this.highlightForColor(color);
 })
-
+// 3-way interaction between searchView, legend and graphView
+graphView.listenTo(searchView,"searchTermSelected",function(termObj){
+	var color = graphView.findColor(termObj.term);
+	legend.highlightForColor(color);
+});
