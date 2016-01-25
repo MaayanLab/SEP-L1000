@@ -4,3 +4,4 @@ error_log
 *.pyc
 python/*.json
 data/*.gml
+*.sql
