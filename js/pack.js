@@ -184,13 +184,8 @@ var DiGraphView = Backbone.View.extend({
 			  	var modelId = d.get('id');
 			  	self.dots.preloadNodeInfo(modelId);
 
-				// highlight the corresponding category
-				d3.selectAll('#colorLegend a').filter(function(D){
-					d3.select(this).attr('class', '')
-					return D[1] === d.get('color');
-				}).each(function(D){
-					d3.select(this).attr('class', 'highlight-legend')
-				});
+			  	self.trigger('dotClicked', d.get('color'));
+
 			  });
 
 			this.node.append("title")
@@ -498,6 +493,66 @@ var ChangeDataBtn = BaseBtn.extend({
 	},
 })
 
+var LegendView = Backbone.View.extend({ // for the category legend
+	// should listenTo DiGraphView and SearchView to do highlightForTerm
+	defaults: {
+		eventName: "legendClicked"
+	},
+
+	el: "#colorLegend",
+
+	initialize: function(options){
+ 		//initialize with defaults and passed arguments.
+ 		_.defaults(options,this.defaults);
+ 		_.defaults(this,options);
+
+		var self = this;
+		$.getJSON('get_legend.php', {type: 'side_effect_network.json'}, function(json) {
+			// use d3 to make legend DOMs and bind to a property 'a'
+			self.a = d3.select(self.el).selectAll('a').data(json).enter()
+				.append('small').text(' | ')
+				.append('a')
+				.style('cursor', 'pointer')
+				.style('background-color', function(d){
+					return d.color;
+				})
+				.style('color', 'black')
+				.text(function(d){
+					return d.name;
+				})
+				.on('click', function(d){
+					self.trigger(self.eventName, d.color);
+					self.highlightForColor(d.color);
+				});
+		});
+
+	},
+
+	render: function(){
+
+	},
+
+	removeHighlight: function(){ 
+		// to remove all current highlights on legends
+		this.a.attr('class', '');
+	},
+
+	highlightForColor: function(color){
+		// highlight the corresponding category
+		this.removeHighlight();
+		this.a.filter(function(d){
+			return d.color === color;
+		}).each(function(d){
+			d3.select(this).attr('class', 'highlight-legend')
+		});
+	},
+
+	highlightForTerm: function(term){
+
+
+	},
+
+})
 
 // Non-modular functions
 
@@ -675,25 +730,14 @@ graphView.listenTo(zoomOutBtn, 'zoomOutClicked', function(){
 zoomOutBtn.listenTo(graphView, 'zoomOutEnabled', zoomOutBtn.enable);
 zoomOutBtn.listenTo(graphView, 'zoomoutDisabled', zoomOutBtn.disable);
 
-
-// display legend, click legend to highlight side effects of the category
-$.getJSON('get_legend.php', {type: 'side_effect_network.json'}, function(json) {
-	for (var i = json.length - 1; i >= 0; i--) {
-		var name = json[i].name;
-		var color = "#" + json[i].color;
-
-		var a = d3.select("#colorLegend").append('small').append('a')
-			.datum([name, color])
-			.attr('href', '#')
-			.style('background-color', color).style('color', 'black').text(name);
-
-		a.on('click', function(d) {
-			graphView.removeHighlighted();
-			graphView.highlightCategory(d[1]);
-		});
-
-		d3.select("#colorLegend").append('small').text(' | ');
-	};
-
+// create color/category legend
+var legend = new LegendView({el: "#colorLegend"});
+// interactions between legend and graphView
+graphView.listenTo(legend, 'legendClicked', function(color){
+	this.removeHighlighted();
+	this.highlightCategory(color);
 });
+legend.listenTo(graphView, 'dotClicked', function(color){
+	this.highlightForColor(color);
+})
 
