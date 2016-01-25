@@ -119,6 +119,7 @@ var DiGraphView = Backbone.View.extend({
 		scaleExponent: 1,
 		zoomTranslate: [],
 		dbTables: [],
+		modelId1: "C0029445", // the modelId to be preloaded
 	},	
 
 
@@ -183,6 +184,7 @@ var DiGraphView = Backbone.View.extend({
 			  .on('click', function(d){
 			  	var modelId = d.get('id');
 			  	self.dots.preloadNodeInfo(modelId);
+			  	self.highlightDot(modelId);
 
 			  	self.trigger('dotClicked', d.get('color'));
 
@@ -230,7 +232,8 @@ var DiGraphView = Backbone.View.extend({
 		  .attr("transform", function(d) { 
 		    return "translate(" + d.get('x') + "," + d.get('y') + ")"; }) 			
 
-		this.dots.preloadNodeInfo("C0029445"); 
+		this.dots.preloadNodeInfo(this.modelId1); 
+		this.highlightDot(this.modelId1);
 
 		this.showText();
 	},
@@ -382,7 +385,16 @@ var DiGraphView = Backbone.View.extend({
 	removeHighlighted: function(){
 		var self = this;
 		this.svg.selectAll('.highlight').classed('highlight', false);
-	},	
+	},
+
+	highlightDot: function(modelId){
+		// remove highlighted Dot(s) first, then highlight one dot based on modelId
+		this.removeHighlighted();
+		this.svg.selectAll('g')
+			.filter(function(d){
+				return d.get('id') === modelId;
+			}).classed('highlight', true);
+	}
 });
 
 
@@ -540,10 +552,6 @@ var LegendView = Backbone.View.extend({ // for the category legend
 
 	},
 
-	render: function(){
-
-	},
-
 	removeHighlight: function(){ 
 		// to remove all current highlights on legends
 		this.a.attr('class', '');
@@ -557,11 +565,6 @@ var LegendView = Backbone.View.extend({ // for the category legend
 		}).each(function(d){
 			d3.select(this).attr('class', 'highlight-legend')
 		});
-	},
-
-	highlightForTerm: function(term){
-
-
 	},
 
 })
