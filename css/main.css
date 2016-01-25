@@ -46,11 +46,6 @@ body {
   margin-left: auto;
   margin-right: auto; }
 
-.svgBorder {
-  /*border-style: solid;*/
-  /*border-color: #656468;*/
-  /*border-color: white;*/ }
-
 .overlay {
   fill: none;
   pointer-events: all; }
@@ -69,30 +64,14 @@ text {
 }
 
 #searchBox {
-  /*width: 600px;*/
-  /*background-color: #465257;*/
-  /*color: azure;*/
   border-color: #000;
-  /*border-color: azure;*/
   border-width: 2px;
-  /*padding-top: 4px;*/
   text-align: center;
   padding-bottom: 4px;
   border-style: solid;
   margin-bottom: 2px; 
   margin-top: 2px;
 }
-
-.custom-autocomplete-ul {
-  /*background-color: rgba(0, 0, 0, 0.5);*/
-  /*color: white;*/
-  /*font-size: 0.6em; */
-}
-/*
-a {
-  text-decoration: underline;
-  cursor: pointer;
-  color: #656468; }*/
 
 #below {
   margin-top: 10px; }
@@ -145,10 +124,6 @@ a {
   padding-left: 1.5em;
   color: white; }
 
-.custom-ui-tooltip {
-  /*background-color: rgba(0, 0, 0, 0.5); */
-}
-
 #colorPickerButton {
   position: absolute;
   top: 121;
@@ -189,15 +164,10 @@ a {
 }
 
 .d3-tooltip{ background-color: #eee;
-          margin: 10px;
-/*          height: 50px;
-          width: 150px;*/
-          padding: 10px; 
-    /*-webkit-border-radius:10px;*/
-    /*-moz-border-radius:10px;*/
-    /*border-radius:10px;*/
-    opacity: 1;
-        }
+  margin: 10px;
+  padding: 10px;
+  opacity: 1;
+}
 
 figure {
   display:inline-block;

@@ -6,7 +6,6 @@ var Dot = Backbone.Model.extend({
 
 	// parse numeric string attributes to numbers
 	parse: function(response){
-		response.color = '#' + response.color;
 		response.value = parseFloat(response.value);
 		response.x = parseFloat(response.x);
 		response.y = parseFloat(response.y);
@@ -656,7 +655,7 @@ displayNodeInfo = function(nodeInfoSelector, model, info) {
 		.text("* Already known to cause side effect (")
 	span.append("a").text('filter') // to filter out known drugs
 		.attr('id', 'filterAnchor')
-		.attr('href', '##')
+		.style('cursor', 'pointer')
 		.on('click', function(){
 			model.updateInfo(true, 100);
 		});
