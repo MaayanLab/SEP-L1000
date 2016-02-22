@@ -16,15 +16,26 @@ function initTour() {
     {
         content: [
             '<p>Side effects in the bubble chart can be searched by name</p>',
-            '<p>For example, type "Neuropathy peripheral"</p>',
+            '<p>For example, type "Hepatitis"</p>',
             '<p>Once searched, the dot representing the side effect will be centered. </p>'
         ].join(''),
         highlightTarget: true,
-        nextButton: true,
+        nextButton: false,
         closeButton: true,
         target: $('#searchBox'),
         my: 'top center',
-        at: 'bottom center'
+        at: 'bottom center',
+        // only allow to continue after user typed a term
+        setup: function(tour, options){
+            options.searchView.bind('searchTermSelected', this.myEvent);
+        },
+        bind: ['myEvent'],
+        teardown: function(tour, options){
+            options.searchView.unbind('searchTermSelected', this.myEvent)
+        },
+        myEvent: function(tour, options, view){
+            tour.next();
+        }
     },
     {
     	content: [
@@ -62,15 +73,26 @@ function initTour() {
     		'<p>You can also explore side effects by zooming and panning in this bubble chart. And display the information of side effects by clicking them.</p>'
     	].join(''),
         highlightTarget: true,
-        nextButton: true,
+        nextButton: false,
         closeButton: true,
         target: $('#stage'),
         my: 'bottom center',
-        at: 'top center'    	    	
+        at: 'top center', 
+        setup: function(tour, options){
+            options.graphView.bind('dotClicked', this.myEvent);
+        },
+        bind: ['myEvent'],
+        teardown: function(tour, options){
+            options.graphView.unbind('dotClicked', this.myEvent)
+        },
+        myEvent: function(tour, options, view){
+            tour.next();
+        }
     },
     {
         content: [
-            '<p>Drug and side effect profiles that are available on the site can be searched using this search box. </p>'
+            '<p>Drug and side effect profiles that are available on the site can be searched using this search box. </p>',
+            '<p>For example, search "ibuprofen", or "Hepatitis".</p>'
         ].join(''),
         highlightTarget: true,
         nextButton: true,
@@ -85,6 +107,10 @@ function initTour() {
         steps: steps,
         tipClass: 'Bootstrap',
         tipOptions:{ showEffect: 'slidein' },
+        stepOptions: {
+            searchView: searchView,
+            graphView: graphView,
+        }
     });
     tour.start();
 }
