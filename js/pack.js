@@ -7,6 +7,7 @@ var Dot = Backbone.Model.extend({
 	// parse numeric string attributes to numbers
 	parse: function(response){
 		response.value = parseFloat(response.value);
+		response.color = "#" + response.color;
 		response.x = parseFloat(response.x);
 		response.y = parseFloat(response.y);
 		response.r = parseFloat(response.r);
