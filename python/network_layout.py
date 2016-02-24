@@ -135,6 +135,7 @@ def make_directed_json_graph(gmt_fn, d_id_name, d_id_category, d_category_color,
 	Gu = nx.from_numpy_matrix(adj_matrix) # undirected Graph, to get size
 
 	G = nx.DiGraph()
+	print adj_matrix.shape, len(umls_ids_kept)
 	for i in range(adj_matrix.shape[0]):
 		cluster_label = hc.labels_[i]
 		umls_id = umls_ids_kept[i]
@@ -147,6 +148,7 @@ def make_directed_json_graph(gmt_fn, d_id_name, d_id_category, d_category_color,
 		category = d_id_category[umls_id]
 		color = d_category_color[category]
 		G.node[umls_id]['color'] = color
+	print G.number_of_nodes(), G.number_of_edges()	
 	graph_data = json_graph.tree_data(G,root='root')
 	json.dump(graph_data, open(outfn, 'wb'))
 	return
@@ -178,7 +180,8 @@ def make_directed_json_graph_soc(gmt_fn, d_id_name, d_id_category, d_category_co
 
 		G.node[umls_id]['size'] = Gu.degree(i)
 		G.node[umls_id]['label'] = name
-		G.node[umls_id]['color'] = color		
+		G.node[umls_id]['color'] = color
+	print G.number_of_nodes(), G.number_of_edges()		
 	graph_data = json_graph.tree_data(G,root='root')
 	json.dump(graph_data, open(outfn, 'wb'))
 	return
@@ -193,7 +196,7 @@ PREDICTION_DF = HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF1000
 
 ## for side effects
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only.gmt'
-GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF100_GOtCS_AUC_0.7_proba_0.75.gmt' 
+GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/ET100_GOtCS_AUC_0.78_proba_0.75.gmt' 
 GML_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effect_network.gml'
 ## for drugs
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only_flipped.gmt'
@@ -238,8 +241,8 @@ d_soc_color = dict(zip(set(d_umls_soc.values()), COLORS40))
 # make_network_json(CSV_FN, d_umls_pt, d_umls_soc, d_soc_color, outfn=JSON_FN)
 
 # make directed graph for predicted SEs
-# make_directed_json_graph(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
-# 	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_with_known.json')
+make_directed_json_graph(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
+	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_with_known.json')
 make_directed_json_graph_soc(GMT_FN, d_umls_pt, d_umls_soc, d_soc_color, 
 	outfn=HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effects_digraph_soc_with_known.json')
 

@@ -5,3 +5,4 @@ error_log
 python/*.json
 data/*.gml
 *.sql
+.DS_Store

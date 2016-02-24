@@ -46,7 +46,8 @@ transfer_table('drugs_stitch', DrugStitch, session)
 # p_vals from the latest prediction
 ## get AUC for each side_effect
 
-aucs = np.loadtxt(HOME + '/Documents/Zichen_Projects/drug_se_prediction/ExtraTrees100_RLogit_GO + MACCS_per-label_AUC_n794x1053.txt').mean(axis=1)
+# aucs = np.loadtxt(HOME + '/Documents/Zichen_Projects/drug_se_prediction/ExtraTrees100_RLogit_GO + MACCS_per-label_AUC_n794x1053.txt').mean(axis=1)
+aucs = np.loadtxt(HOME + '/Documents/Zichen_Projects/drug_se_prediction/ET100_balanced_BRLogit2_auto_GO + MACCS_per-label_AUC-S3folds_n794x1053_top_50_features.txt').mean(axis=1)
 print len(aucs)
 print np.percentile(aucs, 75)
 print aucs[aucs > 0.7].shape
