@@ -16,7 +16,7 @@ function initTour() {
     {
         content: [
             '<p>Side effects in the bubble chart can be searched by name</p>',
-            '<p>For example, type "Hepatitis"</p>',
+            '<p>For example, type "Dysuria"</p>',
             '<p>Once searched, the dot representing the side effect will be centered. </p>'
         ].join(''),
         highlightTarget: true,
