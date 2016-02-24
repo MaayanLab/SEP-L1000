@@ -196,7 +196,7 @@ PREDICTION_DF = HOME + '/Documents/Zichen_Projects/drug_se_prediction/PTs_RF1000
 
 ## for side effects
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only.gmt'
-GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/ET100_GOtCS_AUC_0.78_proba_0.75.gmt' 
+GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/ET100_GOtCS_AUC_0.76_proba_0.75.gmt' 
 GML_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/side_effect_network.gml'
 ## for drugs
 # GMT_FN = HOME+'/Documents/Zichen_Projects/drug_se_prediction/RF1000_GOtCS_AUC_0.7_proba_0.6_prediction_only_flipped.gmt'
