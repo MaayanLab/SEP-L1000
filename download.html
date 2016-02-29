@@ -1,0 +1,79 @@
+<div class="container-fluid">
+	<div class="row">
+		<div id="data" class="col-md-10 col-md-offset-1">
+		</div>
+	</div>
+</div>
+<script>
+$.getJSON('data/download_data.json', function(results){
+	headerLabels = ['Name', 'Description', 'Rows', 'Columns', 'Size(MB)', 'md5', 'Source', 'Reference']
+
+        var table = $('<table>').addClass('table table-striped table-hover');
+
+        var thead = $('<thead>');
+        var tr = $('<tr>')
+
+        $.each(headerLabels,function(i, headerLabel) {
+            tr.append('<th>' + headerLabel + '</th>');
+        });
+
+        thead.append(tr)
+        table.append(thead);
+        $("#data").append(table);
+        var columnsDef = [   
+        { 
+        	"data": "Name",
+        	"render": function(data, type, full, meta){
+        		console.log(full)
+        		return '<a href="'+full['path']+'"download>'+data+'</a>';
+        	}
+
+        },
+        { "data": "Description"},
+        { "data": "Rows"},
+        { "data": "Columns"},
+        { "data": "Size(MB)"},
+        { "data": "md5"},
+        { 
+        	"data" : "Source",
+        	"render": function(data, type, full, meta){
+        		return '<a href="'+data+'">'+data+'</a>';
+        	}
+    	},
+
+
+        { 
+            "data": "Reference", 
+            "render": function(data, type, full, meta){
+            	return '<a href="'+data+'">'+data+'</a>';
+            }
+        }
+        ];
+
+    rctable = table.dataTable({
+        "data": results,
+        "columns": columnsDef,
+        "order": [[3, 'desc']],
+        "deferRender": true,
+        "sDom": 'T<"clear">lfrtip',
+        "oTableTools": {
+            // to save table
+            "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
+            "aButtons": [
+            "copy",
+            "print",
+            {
+                "sExtends":    "collection",
+                "sButtonText": 'Save <span class="caret" />',
+                "aButtons":    [ "csv", "xls", "pdf" ]
+            }
+            ],
+        },
+        "fnInitComplete": function(oSettings, json){ //DataTables has finished its initialisation.
+            $('[data-toggle="tooltip"]').tooltip();
+        },
+    });
+
+});
+
+</script>

@@ -21,7 +21,8 @@ var Router = Backbone.Router.extend({
 		'drug/:id': 'drug',
 		'se/:id': 'se',
 		'search/:searchStr': 'search',
-		'network/:name': 'network'
+		'network/:name': 'network',
+		'download': 'download'
 	},
 
 	home: function(){
@@ -100,6 +101,14 @@ var Router = Backbone.Router.extend({
 			$("#network").addClass('active');	
 		});
 	},
+
+	download: function(){
+		$(this.el).load("download.html", function() {
+			hideTour();
+			removeActive();
+			$("#download").addClass('active');
+		});		
+	}
 
 });
 
