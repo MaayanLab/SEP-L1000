@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="row">
-		<div id="data" class="col-md-10 col-md-offset-1">
+		<div id="data" class="col-xs-10 col-xs-offset-1">
 		</div>
 	</div>
 </div>
@@ -11,17 +11,33 @@ table{
   clear: both;
   border-collapse: collapse;
   table-layout: fixed;
-  /*word-wrap:break-word;*/
+}
+
+tr {
+	text-align: center;
+	word-wrap:break-word;
+}
+th {
+	word-wrap: normal; 
+}
+.left{
+	text-align: left;
+	padding-left: 0 !important;
+}
+.copy{
+	cursor: pointer;
 }
 </style>
 <script src="js/clipboard.min.js"></script>
 <script>
-var clipboard = new Clipboard('.btn');
+var clipboard = new Clipboard('.copy');
 clipboard.on('success', function(e) {
     flashTooltip(e.trigger, 'Copied!');
 });
 
 function flashTooltip(elem, msg) {
+	// distroy the helper text
+	$(elem).tooltip('destroy');
 	// show tooltip
     elem.setAttribute('title', msg);
     $(elem).tooltip('show');
@@ -56,9 +72,11 @@ $.getJSON('data/download_data.json', function(results){
     	"render": function(data, type, full, meta){
     		return '<a href="'+full['path']+'"download>'+data+'</a>';
     	},
+    	"className": "left"
     },
     { 
     	"data": "Description",
+    	"className": "left"
     },
     { "data": "Rows"},
     { "data": "Columns"},
@@ -66,17 +84,18 @@ $.getJSON('data/download_data.json', function(results){
     { 
     	"data": "md5",
     	"render": function(data, type, full, meta){
-    		var icon = '<span class="glyphicon glyphicon-copy" data-toggle="tooltip" title="Click to copy"></span>';
-    		return '<button class="btn btn-xs" data-clipboard-text="'+ data +'">' + icon + '</button>';
+    		var icon = '<span class="glyphicon glyphicon-copy" ></span>';
+    		return '<a class="copy" data-toggle="tooltip" title="Click to copy" data-clipboard-text="'+ data +'">' + icon + '</a>';
     	}
     },
     { 
     	"data" : "Source",
     	"render": function(data, type, full, meta){
+    		var icon = '<span class="glyphicon glyphicon-share-alt"></span>'
     		if (data) {
-    			return '<a target="_blank" href="'+data+'">'+'link'+'</a>';	
+    			return '<a target="_blank" data-toggle="tooltip" title="Link to source" href="'+data+'">'+icon+'</a>';	
     		}else{
-    			return 'NA';
+    			return icon;
     		};
     	},
 	},
@@ -85,10 +104,11 @@ $.getJSON('data/download_data.json', function(results){
     { 
         "data": "Reference", 
         "render": function(data, type, full, meta){
+        	var icon = '<span class="glyphicon glyphicon-book"></span>'
         	if (data) {
-        		return '<a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/'+data+'">'+data+'</a>';	
+        		return '<a target="_blank" data-toggle="tooltip" title="Link to reference" href="http://www.ncbi.nlm.nih.gov/pubmed/'+data+'">'+icon+'</a>';	
         	}else{
-        		return 'NA';
+        		return icon;
         	}
         },
     }
@@ -97,7 +117,7 @@ $.getJSON('data/download_data.json', function(results){
     rctable = table.dataTable({
         "data": results,
         "columns": columnsDef,
-        "order": [[3, 'desc']],
+        "order": [[0, 'asc']],
         "deferRender": true,
         "bAutoWidth": false,
 
