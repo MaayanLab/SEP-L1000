@@ -4,76 +4,126 @@
 		</div>
 	</div>
 </div>
+<style type="text/css">
+table{
+  margin: 0 auto;
+  width: 100%;
+  clear: both;
+  border-collapse: collapse;
+  table-layout: fixed;
+  /*word-wrap:break-word;*/
+}
+</style>
+<script src="js/clipboard.min.js"></script>
 <script>
+var clipboard = new Clipboard('.btn');
+clipboard.on('success', function(e) {
+    flashTooltip(e.trigger, 'Copied!');
+});
+
+function flashTooltip(elem, msg) {
+	// show tooltip
+    elem.setAttribute('title', msg);
+    $(elem).tooltip('show');
+    // remote title and tooltip
+    setTimeout(function(){
+    	$(elem).tooltip('destroy');
+    	elem.removeAttribute('title');
+    }, 500);
+}
+
+
 $.getJSON('data/download_data.json', function(results){
-	headerLabels = ['Name', 'Description', 'Rows', 'Columns', 'Size(MB)', 'md5', 'Source', 'Reference']
+	var headerLabels = ['Name', 'Description', 'Rows', 'Columns', 'Size(MB)', 'md5', 'Source', 'Reference'];
+	var widths = ["20%", "50%", "5%", "5%", "5%", "5%", "5%", "5%"];
 
-        var table = $('<table>').addClass('table table-striped table-hover');
+    var table = $('<table>').addClass('table table-striped table-hover table-condensed');
 
-        var thead = $('<thead>');
-        var tr = $('<tr>')
+    var thead = $('<thead>');
+    var tr = $('<tr>')
 
-        $.each(headerLabels,function(i, headerLabel) {
-            tr.append('<th>' + headerLabel + '</th>');
-        });
+    $.each(headerLabels,function(i, headerLabel) {
+    	var w = widths[i];
+        tr.append('<th style="width:' +w+ ';">' + headerLabel + '</th>');
+    });
 
-        thead.append(tr)
-        table.append(thead);
-        $("#data").append(table);
-        var columnsDef = [   
-        { 
-        	"data": "Name",
-        	"render": function(data, type, full, meta){
-        		console.log(full)
-        		return '<a href="'+full['path']+'"download>'+data+'</a>';
-        	}
-
-        },
-        { "data": "Description"},
-        { "data": "Rows"},
-        { "data": "Columns"},
-        { "data": "Size(MB)"},
-        { "data": "md5"},
-        { 
-        	"data" : "Source",
-        	"render": function(data, type, full, meta){
-        		return '<a href="'+data+'">'+data+'</a>';
-        	}
+    thead.append(tr)
+    table.append(thead);
+    $("#data").append(table);
+    var columnsDef = [   
+    { 
+    	"data": "Name",
+    	"render": function(data, type, full, meta){
+    		return '<a href="'+full['path']+'"download>'+data+'</a>';
     	},
+    },
+    { 
+    	"data": "Description",
+    },
+    { "data": "Rows"},
+    { "data": "Columns"},
+    { "data": "Size(MB)"},
+    { 
+    	"data": "md5",
+    	"render": function(data, type, full, meta){
+    		var icon = '<span class="glyphicon glyphicon-copy" data-toggle="tooltip" title="Click to copy"></span>';
+    		return '<button class="btn btn-xs" data-clipboard-text="'+ data +'">' + icon + '</button>';
+    	}
+    },
+    { 
+    	"data" : "Source",
+    	"render": function(data, type, full, meta){
+    		if (data) {
+    			return '<a target="_blank" href="'+data+'">'+'link'+'</a>';	
+    		}else{
+    			return 'NA';
+    		};
+    	},
+	},
 
 
-        { 
-            "data": "Reference", 
-            "render": function(data, type, full, meta){
-            	return '<a href="'+data+'">'+data+'</a>';
-            }
-        }
-        ];
+    { 
+        "data": "Reference", 
+        "render": function(data, type, full, meta){
+        	if (data) {
+        		return '<a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/'+data+'">'+data+'</a>';	
+        	}else{
+        		return 'NA';
+        	}
+        },
+    }
+    ];
 
     rctable = table.dataTable({
         "data": results,
         "columns": columnsDef,
         "order": [[3, 'desc']],
         "deferRender": true,
-        "sDom": 'T<"clear">lfrtip',
-        "oTableTools": {
-            // to save table
-            "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
-            "aButtons": [
-            "copy",
-            "print",
-            {
-                "sExtends":    "collection",
-                "sButtonText": 'Save <span class="caret" />',
-                "aButtons":    [ "csv", "xls", "pdf" ]
-            }
-            ],
-        },
+        "bAutoWidth": false,
+
+
+        // "sDom": 'T<"clear">lfrtip',
+        // "oTableTools": {
+        //     // to save table
+        //     "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
+        //     "aButtons": [
+        //     "copy",
+        //     "print",
+        //     {
+        //         "sExtends":    "collection",
+        //         "sButtonText": 'Save <span class="caret" />',
+        //         "aButtons":    [ "csv", "xls", "pdf" ]
+        //     }
+        //     ],
+        // },
         "fnInitComplete": function(oSettings, json){ //DataTables has finished its initialisation.
             $('[data-toggle="tooltip"]').tooltip();
         },
     });
 
 });
+
+
+
 
 </script>
