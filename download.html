@@ -1,6 +1,15 @@
 <div class="container-fluid">
 	<div class="row">
-		<div id="data" class="col-xs-10 col-xs-offset-1">
+		<div class="col-xs-10 col-xs-offset-1">
+			<div class="page-header">
+				<h3>Processed data for downloading</h3>
+			</div>
+			<div id="data"></div>
+			
+			<div class="page-header">
+				<h3>Meta-data of the processed data</h3>
+			</div>
+			<div id="metadata"></div>
 		</div>
 	</div>
 </div>
@@ -48,7 +57,7 @@ function flashTooltip(elem, msg) {
     }, 500);
 }
 
-
+// For data
 $.getJSON('data/download_data.json', function(results){
 	var headerLabels = ['Name', 'Description', 'Rows', 'Columns', 'Size(MB)', 'md5', 'Source', 'Reference'];
 	var widths = ["20%", "50%", "5%", "5%", "5%", "5%", "5%", "5%"];
@@ -99,8 +108,6 @@ $.getJSON('data/download_data.json', function(results){
     		};
     	},
 	},
-
-
     { 
         "data": "Reference", 
         "render": function(data, type, full, meta){
@@ -120,22 +127,6 @@ $.getJSON('data/download_data.json', function(results){
         "order": [[0, 'asc']],
         "deferRender": true,
         "bAutoWidth": false,
-
-
-        // "sDom": 'T<"clear">lfrtip',
-        // "oTableTools": {
-        //     // to save table
-        //     "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
-        //     "aButtons": [
-        //     "copy",
-        //     "print",
-        //     {
-        //         "sExtends":    "collection",
-        //         "sButtonText": 'Save <span class="caret" />',
-        //         "aButtons":    [ "csv", "xls", "pdf" ]
-        //     }
-        //     ],
-        // },
         "fnInitComplete": function(oSettings, json){ //DataTables has finished its initialisation.
             $('[data-toggle="tooltip"]').tooltip();
         },
@@ -143,6 +134,68 @@ $.getJSON('data/download_data.json', function(results){
 
 });
 
+// For metadata
+$.getJSON('data/download_metadata.json', function(results){
+	var headerLabels = ['Name', 'Fields', 'Rows', 'Columns', 'Size(MB)', 'md5'];
+	var widths = ["20%", "40%", "10%", "10%", "10%", "10%"];
+
+    var table = $('<table>').addClass('table table-striped table-hover table-condensed');
+
+    var thead = $('<thead>');
+    var tr = $('<tr>')
+
+    $.each(headerLabels,function(i, headerLabel) {
+    	var w = widths[i];
+        tr.append('<th style="width:' +w+ ';">' + headerLabel + '</th>');
+    });
+
+    thead.append(tr)
+    table.append(thead);
+    $("#metadata").append(table);
+    var columnsDef = [   
+    { 
+    	"data": "Name",
+    	"render": function(data, type, full, meta){
+    		return '<a href="'+full['path']+'"download>'+data+'</a>';
+    	},
+    	"className": "left"
+    },
+    { 
+    	"data": "Fields",
+    	"render": function(data, type, full, meta){
+    		var res = [];
+    		$.each(data, function(i, d){
+    			res.push( '<code>'+ d +'</code>' );
+    		})
+    		return res.join(', ')
+    	},
+    	"className": "left"
+    },
+    { "data": "Rows", "className": "left"},
+    { "data": "Columns", "className": "left"},
+    { "data": "Size(MB)", "className": "left"},
+    { 
+    	"data": "md5",
+    	"render": function(data, type, full, meta){
+    		var icon = '<span class="glyphicon glyphicon-copy" ></span>';
+    		return '<a class="copy" data-toggle="tooltip" title="Click to copy" data-clipboard-text="'+ data +'">' + icon + '</a>';
+    	},
+    	"className": "left"
+    },
+    ];
+
+    rctable = table.dataTable({
+        "data": results,
+        "columns": columnsDef,
+        "order": [[0, 'asc']],
+        "deferRender": true,
+        "bAutoWidth": false,
+        "fnInitComplete": function(oSettings, json){ //DataTables has finished its initialisation.
+            $('[data-toggle="tooltip"]').tooltip();
+        },
+    });
+
+});
 
 
 
