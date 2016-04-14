@@ -1,8 +1,31 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
+      <h1>Abstract</h1>
+      <p>
+        <strong>Motivation:</strong>
+        Adverse Drug Reactions (ADRs) are a central consideration during drug development. Here we present a machine learning classifier to prioritize ADRs for approved drugs and pre-clinical small-molecule compounds by combining chemical structure (CS) and gene expression (GE) features. The GE data is from the Library of Integrated Network-based Cellular Signatures (LINCS) L1000 dataset that measured changes in GE before and after treatment of human cells with over 20,000 small molecule compounds including most of the FDA-approved drugs. Using various benchmarking methods, we show that the integration of GE data with the CS of the drugs can significantly improve the predictability of ADRs. Moreover, transforming GE features to enrichment vectors of biological terms further improves the predictive capability of the classifiers. The most predictive biological-term features can assist in understanding the drug mechanisms of action. Finally, we applied the classifier to all >20,000 small molecules profiled, and developed a web portal for browsing and searching predictive small-molecule/ADR connections.
+      </p>
+      <p>
+        <strong>Availability:</strong>
+        The interface for the adverse event predictions for the >20,000 LINCS compounds is available at <a href="http://maayanlab.net/SEP-L1000/">http://maayanlab.net/SEP-L1000/</a>.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <h1>Citation</h1>
+      <p>
+        Zichen Wang, Neil R. Clark, and Avi Ma'ayan (2016) <strong>Drug Induced Adverse Events Prediction with the LINCS L1000 Data</strong>
+        <i>Bioinformatics</i>
+        <a href="http://dx.doi.org/10.1093/bioinformatics/btw168">doi:10.1093/bioinformatics/btw168</a>
+      </p>
+    </div>    
+  </div>
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
       <div id="method">
-        
+        <h1>Methods</h1>
         <figure>
           <img src="img/Fig1.png" width="800px">
           <figcaption>Figure 1. Workflow overview. (A) Venn diagram shows the overlap between drugs and small molecule compounds across different data sources. (B) Representation of the use of drug-feature matrices of different types to predict adverse drug reactions using multi-label classification.</figcaption>
@@ -59,7 +82,7 @@
         </p>
       </div>
       <div id="references">
-        <h4>References</h4>
+        <h1>References</h1>
         <ol>
           <li id="ref1">
             Kuhn M, Campillos M, Letunic I, Jensen LJ, Bork P: <strong>A side effect resource to capture phenotypic effects of drugs.</strong> <i>Molecular systems biology</i> 2010, 6(1).
@@ -104,7 +127,8 @@
       </div>
 
       <div id="video">
-        <h4>A webinar discussing the project was presented by Zichen Wang on April 14th, 2015 and is available on YouTube </h4>
+        <h1>Presentation</h1>
+        <p>A webinar discussing the project was presented by Zichen Wang on April 14th, 2015 and is available on YouTube </p>
         <div class="embed-responsive embed-responsive-16by9">
           <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/EHUAU05O0kQ" allowfullscreen></iframe>
         </div>

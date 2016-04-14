@@ -16,7 +16,7 @@ var Router = Backbone.Router.extend({
 		'': 'home',
 		'browseDrugs': 'browseDrugs',
 		'browseSEs': 'browseSEs',
-		'methods': 'methods',
+		'about': 'about',
 		'links': 'links',
 		'drug/:id': 'drug',
 		'se/:id': 'se',
@@ -49,11 +49,11 @@ var Router = Backbone.Router.extend({
 		});
 	},
 
-	methods: function(){
-		$(this.el).load("method.html", function() {
+	about: function(){
+		$(this.el).load("about.html", function() {
 			hideTour();
 			removeActive();
-			$("#methods").addClass('active');
+			$("#about").addClass('active');
 		});
 	},
 
