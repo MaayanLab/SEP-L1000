@@ -38,49 +38,50 @@
               dl.append('<dt>Predictability:</dt><dd>AUROC = ' + json['auroc'] + '</dd>' );
               div.append(dl)
               $('#se_info').append(div);
-            });
 
-            $.ajax({
-              url: 'get_se_drug.php',
-              type: 'get',
-              xhrFields: {
-                onprogress: function(e){
-                  if(e.lengthComputable){
-                    // var progressVal = 100*e.loaded/e.total + '%';
-                    // $('#progress-bar1').css('width', progressVal);
+              $.ajax({
+                url: 'get_se_drug.php',
+                type: 'get',
+                xhrFields: {
+                  onprogress: function(e){
+                    if(e.lengthComputable){
+                      // var progressVal = 100*e.loaded/e.total + '%';
+                      // $('#progress-bar1').css('width', progressVal);
+                    }
                   }
+                },
+                data: {umls_id: umls_id},
+                dataType: 'json',
+                success: function(json){
+                  var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>already labeled?</th></tr></thead></table>');
+                  $("#se_drugs .panel-body").html(table);
+                  var tbody = objs2TableRowsWithStatus(json, 'pert_id', '#drug/', '.progress-bar');
+                  table.append(tbody);
+                },
+                complete: function(){
+                  $("#table_drug").dataTable({
+                    "sDom": 'T<"clear">lfrtip',
+                    "oTableTools": {
+                        "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
+                        "aButtons": [
+                        "copy",
+                        "print",
+                        {
+                            "sExtends":    "collection",
+                            "sButtonText": 'Save <span class="caret" />',
+                            "aButtons":    [ "csv", "xls", "pdf" ]
+                        }
+                        ]
+                    },
+                    colReorder:{order: [1,0,2,3]},
+                    "order": [[2, 'desc']],
+                    "deferRender": true,
+                  });
+                  // var filter = '<div class="input-group"><span class="input-group-btn"><button id="filter_btn" class="btn btn-primary" type="button">Filter by probability ></button></span><input id="probability_filter" type="text" class="form-control"></div>';
+                  // $("div.toolbar").html(filter)
                 }
-              },
-              data: {umls_id: umls_id},
-              dataType: 'json',
-              success: function(json){
-                var table = $('<table class="table table-hover table-striped" id="table_drug"><thead><tr><th>Name</th><th>pert_id</th><th>probability</th><th>already labeled?</th></tr></thead></table>');
-                $("#se_drugs .panel-body").html(table);
-                var tbody = objs2TableRowsWithStatus(json, 'pert_id', '#drug/', '.progress-bar');
-                table.append(tbody);
-              },
-              complete: function(){
-                $("#table_drug").dataTable({
-                  "sDom": 'T<"clear">lfrtip',
-                  "oTableTools": {
-                      "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
-                      "aButtons": [
-                      "copy",
-                      "print",
-                      {
-                          "sExtends":    "collection",
-                          "sButtonText": 'Save <span class="caret" />',
-                          "aButtons":    [ "csv", "xls", "pdf" ]
-                      }
-                      ]
-                  },
-                  colReorder:{order: [1,0,2,3]},
-                  "order": [[2, 'desc']],
-                  "deferRender": true,
-                });
-                // var filter = '<div class="input-group"><span class="input-group-btn"><button id="filter_btn" class="btn btn-primary" type="button">Filter by probability ></button></span><input id="probability_filter" type="text" class="form-control"></div>';
-                // $("div.toolbar").html(filter)
-              }
+              });            
+
             });
 
 });

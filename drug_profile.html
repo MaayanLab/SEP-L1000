@@ -27,89 +27,88 @@
       $("#cpd_img").attr("src", "img/cpd-images/" +pert_id+".png")
 
       $(document).ready(function(){
-  $.getJSON('get_drug_se.php', {'pert_id' : pert_id}, function(json){ // load predicted SEs for the drug
-    var table = $('<table class="table table-hover table-striped" id="table_se"><thead><tr><th>Name</th><th>UMLS Concept ID</th><th>probability</th><th>already labeled?</th></tr></thead></table>')
-    var tbody = objs2TableRows(json, 'umls_id', '#se/');
+        $.getJSON('get_drug_se.php', {'pert_id' : pert_id}, function(json){ // load predicted SEs for the drug
+          var table = $('<table class="table table-hover table-striped" id="table_se"><thead><tr><th>Name</th><th>UMLS Concept ID</th><th>probability</th><th>already labeled?</th></tr></thead></table>')
+          var tbody = objs2TableRows(json, 'umls_id', '#se/');
 
-    table.append(tbody);
-    $("#drug_side_effects .panel-body").html(table);
+          table.append(tbody);
+          $("#drug_side_effects .panel-body").html(table);
 
-  }).then(function(){
-    $("#table_se").dataTable({
-      "sDom": 'T<"clear">lfrtip',
-      colReorder:{order: [1,0,2,3]},
-      "order": [[2, 'desc']],
-      "deferRender": true,
-      "oTableTools": {
-          "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
-          "aButtons": [
-          "copy",
-          "print",
-          {
-              "sExtends":    "collection",
-              "sButtonText": 'Save <span class="caret" />',
-              "aButtons":    [ "csv", "xls", "pdf" ]
+        }).then(function(){
+          $("#table_se").dataTable({
+            "sDom": 'T<"clear">lfrtip',
+            colReorder:{order: [1,0,2,3]},
+            "order": [[2, 'desc']],
+            "deferRender": true,
+            "oTableTools": {
+                "sSwfPath": "js/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                "copy",
+                "print",
+                {
+                    "sExtends":    "collection",
+                    "sButtonText": 'Save <span class="caret" />',
+                    "aButtons":    [ "csv", "xls", "pdf" ]
+                }
+                ]
+            },      
+          });
+
+        $.getJSON('drug_profile.php', {'pert_id' : pert_id}, function(json){ // load meta data for the drug
+          $.each(json, function(key, obj){
+            var table = obj2Table(obj);
+            var div = $('<div class="panel">');
+            var panelHead = $('<div class="panel-heading">');
+            panelHead.append('<span class="glyphicon glyphicon-info-sign"></span>');
+            var panelBody = $('<div class="panel-body">');
+            
+            var pert_iname = obj['pert_iname'];
+            $(".panel-heading").html('Predicted side effects for <a href="#drug/' + pert_id + '">' + pert_iname +'</a>');
+            
+            if (key === 'drugs_lincs') {
+              div.addClass('panel-default');
+              var lincsUrl = 'http://apps.lincscloud.org/sandbox/pert_info#' + obj['pert_iname'];
+              panelHead.wrapInner('<a target="_blank" href="' + lincsUrl + '">Information from lincscloud</a>');
+            };
+
+            div.append(panelHead);
+            row = $('<div class="row" id="lincs_row">')
+            var imgURL = 'img/cpd-images/'+pert_id+'.png'
+            var imgDiv = $('<div class="col-md-2">')
+            var tableDiv = $('<div class="col-md-10">')
+            imgDiv.append('<a href="'+imgURL+'"><img height="150" width="150" src="'+imgURL+'" title="Chemical structure for '+pert_id+'"></a>')
+            tableDiv.append(table);
+            row.append(imgDiv)
+            row.append(tableDiv)
+            panelBody.append(row)
+            div.append(panelBody);
+            div.appendTo("#drug_info");
+          });
+      }).done(function(){ // linkouts in the form
+        $('#LSM_id td').eq(1).wrapInner(function(){
+          return '<a target="_blank" href="http://life.ccs.miami.edu/life/summary?mode=SmallMolecule&source=LINCS&input='+$(this).text()+'"></a>'
+        });
+        $('#pubchem_cid td').eq(1).wrapInner(function(){
+          return '<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/'+$(this).text()+'"></a>'
+        });
+        $('#structure_url td').eq(1).wrapInner(function(){
+          if($(this).text() !== 'null'){
+            return '<a target="_blank" href="'+$(this).text()+'"></a>'  
           }
-          ]
-      },      
+        });
+        $('#pert_url td').eq(1).html(function(){
+          var text = $(this).text()
+          if(text !== 'null'){
+            if(text.indexOf(',') > -1) {
+              text = text.split(',')[0];
+            }
+           return '<a target="_blank" href="'+text+'">'+ text +'</a>'
+          }
+        });  
+      })
+    
     });
-  });
 
-  $.getJSON('drug_profile.php', {'pert_id' : pert_id}, function(json){ // load meta data for the drug
-    $.each(json, function(key, obj){
-      var table = obj2Table(obj);
-      var div = $('<div class="panel">');
-      var panelHead = $('<div class="panel-heading">');
-      panelHead.append('<span class="glyphicon glyphicon-info-sign"></span>');
-      var panelBody = $('<div class="panel-body">');
-      
-      var pert_iname = obj['pert_iname'];
-      $(".panel-heading").html('Predicted side effects for <a href="#drug/' + pert_id + '">' + pert_iname +'</a>');
-      
-      if (key === 'drugs_lincs') {
-        div.addClass('panel-default');
-        var lincsUrl = 'http://apps.lincscloud.org/sandbox/pert_info#' + obj['pert_iname'];
-        panelHead.wrapInner('<a target="_blank" href="' + lincsUrl + '">Information from lincscloud</a>');
-      };
-
-      div.append(panelHead);
-      row = $('<div class="row" id="lincs_row">')
-      var imgURL = 'img/cpd-images/'+pert_id+'.png'
-      var imgDiv = $('<div class="col-md-2">')
-      var tableDiv = $('<div class="col-md-10">')
-      imgDiv.append('<a href="'+imgURL+'"><img height="150" width="150" src="'+imgURL+'" title="Chemical structure for '+pert_id+'"></a>')
-      tableDiv.append(table);
-      row.append(imgDiv)
-      row.append(tableDiv)
-      panelBody.append(row)
-      div.append(panelBody);
-      div.appendTo("#drug_info");
-    });
-}).done(function(){ // linkouts in the form
-  $('#LSM_id td').eq(1).wrapInner(function(){
-    return '<a target="_blank" href="http://life.ccs.miami.edu/life/summary?mode=SmallMolecule&source=LINCS&input='+$(this).text()+'"></a>'
-  });
-  $('#pubchem_cid td').eq(1).wrapInner(function(){
-    return '<a target="_blank" href="https://pubchem.ncbi.nlm.nih.gov/compound/'+$(this).text()+'"></a>'
-  });
-  $('#structure_url td').eq(1).wrapInner(function(){
-    if($(this).text() !== 'null'){
-      return '<a target="_blank" href="'+$(this).text()+'"></a>'  
-    }
-  });
-  $('#pert_url td').eq(1).html(function(){
-    var text = $(this).text()
-    if(text !== 'null'){
-      if(text.indexOf(',') > -1) {
-        text = text.split(',')[0];
-      }
-     return '<a target="_blank" href="'+text+'">'+ text +'</a>'
-    }
-  });  
-
-})
-
-// $('#body').scrollspy('refresh');
 });
 
 
